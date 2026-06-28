@@ -358,6 +358,96 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
+
+/* =========================================================
+   FINAL UI FIX
+   1. PC 端恢复 Category | Title
+   2. 移动端关闭叉叉自适应变小
+   不影响 gallery-data.json 动态数据
+   ========================================================= */
+
+/* PC / 全端：确保单图标题永远显示 */
+.pg-single {
+  overflow: hidden;
+}
+
+.pg-single img {
+  max-width: 90vw;
+  max-height: calc(100vh - 190px);
+}
+
+#pg-single-caption {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  color: rgba(255,255,255,.92);
+  font-size: clamp(15px, 1.1vw, 18px);
+  line-height: 1.35;
+  font-weight: 500;
+  margin-top: 14px;
+  padding: 0 18px;
+  max-width: 92vw;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* PC 端导航保持适中 */
+.pg-nav-btn {
+  width: 58px;
+  height: 58px;
+}
+
+.pg-nav-btn svg {
+  width: 34px;
+  height: 34px;
+}
+
+/* 关闭按钮：PC 端适中 */
+.pg-single-close svg,
+.pg-close svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* 移动端：关闭叉叉自适应变小 */
+@media (max-width: 600px) {
+  .pg-single-close {
+    top: 14px;
+    right: 16px;
+    padding: 4px;
+  }
+
+  .pg-single-close svg,
+  .pg-close svg {
+    width: clamp(20px, 5.4vw, 26px);
+    height: clamp(20px, 5.4vw, 26px);
+    stroke-width: 2;
+  }
+
+  .pg-single img {
+    max-width: 92vw;
+    max-height: calc(100vh - 210px);
+  }
+
+  #pg-single-caption {
+    font-size: clamp(15px, 3.8vw, 18px);
+    margin-top: 14px;
+    max-width: 94vw;
+  }
+
+  .pg-nav-btn {
+    width: clamp(70px, 18vw, 88px);
+    height: clamp(70px, 18vw, 88px);
+  }
+
+  .pg-nav-btn svg {
+    width: clamp(38px, 9.5vw, 48px);
+    height: clamp(38px, 9.5vw, 48px);
+  }
+}
+ 
 </style>
 </head>
 
