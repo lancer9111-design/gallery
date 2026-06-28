@@ -53,11 +53,16 @@
   .pg-single img { max-width: 90vw; max-height: 80vh; border-radius: 6px; object-fit: contain; }
   .pg-single-nav { display: flex; align-items: center; gap: 20px; margin-top: 16px; color: #fff; }
   .pg-nav-btn {
-    background: rgba(255,255,255,.15); border: none; color: #fff; font-size: 24px;
-    width: 46px; height: 46px; border-radius: 50%; cursor: pointer;
+    background: rgba(255,255,255,.15); border: none; color: #fff;
+    width: 52px; height: 52px; border-radius: 50%; cursor: pointer;
     display: flex; align-items: center; justify-content: center; transition: background .15s;
   }
   .pg-nav-btn:hover { background: rgba(255,255,255,.3); }
+  @media (max-width: 600px) {
+    .pg-nav-btn { width: 64px; height: 64px; }
+    .pg-nav-btn svg { width: 36px; height: 36px; }
+    .pg-single-nav { gap: 32px; margin-top: 20px; }
+  }
   .pg-single-counter { font-size: 13px; color: rgba(255,255,255,.6); min-width: 64px; text-align: center; }
   .pg-single-close {
     position: fixed; top: 16px; right: 20px; background: none; border: none;
@@ -77,18 +82,27 @@
 <div class="pg-overlay" id="pg-overlay" onclick="pgOverlayClick(event)">
   <div class="pg-topbar">
     <h2 id="pg-title"></h2>
-    <button class="pg-close" onclick="pgClose()">✕</button>
+    <button class="pg-close" onclick="pgClose()" aria-label="关闭">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
   <div class="pg-inner-grid" id="pg-inner-grid"></div>
 </div>
 
 <div class="pg-single" id="pg-single" onclick="pgSingleClick(event)">
-  <button class="pg-single-close" onclick="pgSingleClose()">✕</button>
+  <button class="pg-single-close" onclick="pgSingleClose()" aria-label="关闭">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   <img id="pg-single-img" src="" alt="">
+  <div id="pg-single-caption" style="color:rgba(255,255,255,.85);font-size:14px;margin-top:12px;letter-spacing:.02em;text-align:center;"></div>
   <div class="pg-single-nav">
-    <button class="pg-nav-btn" onclick="pgNav(-1)">&#8249;</button>
+    <button class="pg-nav-btn" onclick="pgNav(-1)" aria-label="上一张">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
     <span class="pg-single-counter" id="pg-single-counter"></span>
-    <button class="pg-nav-btn" onclick="pgNav(1)">&#8250;</button>
+    <button class="pg-nav-btn" onclick="pgNav(1)" aria-label="下一张">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
   </div>
 </div>
 
@@ -98,16 +112,16 @@ const GALLERIES = [
     name: "Collection 01",
     cover: "https://v3b.fal.media/files/b/0a9ffd8a/2p8pGwmVeotGkWCP2nXwv_FUTHnBTN.png",
     images: [
-      "https://v3b.fal.media/files/b/0a9ffd8a/2p8pGwmVeotGkWCP2nXwv_FUTHnBTN.png",
-      "https://v3b.fal.media/files/b/0a9ffd9a/-POHCqKyMkHG9a3OwsXES_gXl1lXK4.png",
-      "https://v3b.fal.media/files/b/0a9ffd80/KFf0r99_IUez4c-pcjNwu_f3S60F7y.png",
-      "https://v3b.fal.media/files/b/0a9ffd8e/khBnZBjhURTAaJOjC_vH6_Sl3y9PvU.png",
-      "https://v3b.fal.media/files/b/0a9ffda5/97rknPvTMtu-ggt29H5Lj_izhN91MJ.png",
-      "https://v3b.fal.media/files/b/0a9ffd82/zSOse0ewXy0x3jF0Dp5V6_k0hTzxsm.png",
-      "https://v3b.fal.media/files/b/0a9ffd92/od9OwXbePN5h449nbD-lK_1DMqvVN8.png",
-      "https://v3b.fal.media/files/b/0a9ffd8c/zm5NzDw_Spm3VXUjrAE5E_33EhYFOm.png",
-      "https://v3b.fal.media/files/b/0a9ffd9f/XpsETqAlsBiJBJeKgrazE_U8TxF5vb.png",
-      "https://v3b.fal.media/files/b/0a9ffd90/jYETpUeUubTeAch-v_DxP_xFZ55wg6.png"
+      { url: "https://v3b.fal.media/files/b/0a9ffd8a/2p8pGwmVeotGkWCP2nXwv_FUTHnBTN.png", category: "Streetwear", title: "Men's Oversized Tee" },
+      { url: "https://v3b.fal.media/files/b/0a9ffd9a/-POHCqKyMkHG9a3OwsXES_gXl1lXK4.png", category: "Streetwear", title: "Women's Hoodie" },
+      { url: "https://v3b.fal.media/files/b/0a9ffd80/KFf0r99_IUez4c-pcjNwu_f3S60F7y.png", category: "Streetwear", title: "Relaxed Fit Look" },
+      { url: "https://v3b.fal.media/files/b/0a9ffd8e/khBnZBjhURTAaJOjC_vH6_Sl3y9PvU.png", category: "Streetwear", title: "Urban Casual" },
+      { url: "https://v3b.fal.media/files/b/0a9ffda5/97rknPvTMtu-ggt29H5Lj_izhN91MJ.png", category: "Streetwear", title: "Outdoor Editorial" },
+      { url: "https://v3b.fal.media/files/b/0a9ffd82/zSOse0ewXy0x3jF0Dp5V6_k0hTzxsm.png", category: "Streetwear", title: "Minimal Outfit" },
+      { url: "https://v3b.fal.media/files/b/0a9ffd92/od9OwXbePN5h449nbD-lK_1DMqvVN8.png", category: "Streetwear", title: "Street Style" },
+      { url: "https://v3b.fal.media/files/b/0a9ffd8c/zm5NzDw_Spm3VXUjrAE5E_33EhYFOm.png", category: "Streetwear", title: "Layered Look" },
+      { url: "https://v3b.fal.media/files/b/0a9ffd9f/XpsETqAlsBiJBJeKgrazE_U8TxF5vb.png", category: "Streetwear", title: "Clean Aesthetic" },
+      { url: "https://v3b.fal.media/files/b/0a9ffd90/jYETpUeUubTeAch-v_DxP_xFZ55wg6.png", category: "Streetwear", title: "Monochrome Fit" }
     ]
   },
   {
@@ -240,7 +254,8 @@ function pgOpen(i) {
   document.getElementById('pg-title').textContent = g.name;
   const inner = document.getElementById('pg-inner-grid');
   inner.innerHTML = '';
-  g.images.forEach((url, j) => {
+  g.images.forEach((item, j) => {
+    const url = typeof item === 'string' ? item : item.url;
     const d = document.createElement('div');
     d.className = 'pg-thumb';
     d.innerHTML = `<img src="${url}" alt="" loading="lazy">`;
@@ -258,9 +273,17 @@ function pgClose() {
 
 function pgSingleOpen(j) {
   currentImg = j;
-  const imgs = GALLERIES[currentGallery].images;
-  document.getElementById('pg-single-img').src = imgs[j];
-  document.getElementById('pg-single-counter').textContent = (j+1) + ' / ' + imgs.length;
+  const g = GALLERIES[currentGallery];
+  const item = g.images[j];
+  // support both plain URL string and {url, category, title} object
+  const url = typeof item === 'string' ? item : item.url;
+  const category = typeof item === 'object' && item.category ? item.category : (g.category || '');
+  const title = typeof item === 'object' && item.title ? item.title : '';
+  document.getElementById('pg-single-img').src = url;
+  document.getElementById('pg-single-counter').textContent = (j+1) + ' / ' + g.images.length;
+  // show "Category | Title" or just one if only one exists
+  const caption = [category, title].filter(Boolean).join(' | ');
+  document.getElementById('pg-single-caption').textContent = caption;
   document.getElementById('pg-single').classList.add('open');
 }
 
