@@ -447,6 +447,44 @@
     height: clamp(38px, 9.5vw, 48px);
   }
 }
+
+.pg-site-title {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 34px 16px 8px;
+  color: #fff;
+}
+
+.pg-site-title h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 56px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 700;
+}
+
+.pg-site-title p {
+  margin: 12px 0 0;
+  max-width: 620px;
+  color: rgba(255,255,255,.62);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .pg-site-title {
+    padding: 28px 14px 6px;
+  }
+
+  .pg-site-title h1 {
+    font-size: 34px;
+  }
+
+  .pg-site-title p {
+    font-size: 14px;
+  }
+}
+
  
 </style>
 </head>
