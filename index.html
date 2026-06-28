@@ -1,3 +1,4 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <style>
   .pg-wrap { font-family: inherit; max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
   .pg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
@@ -191,7 +192,91 @@
     min-width: 58px;
   }
 }
+/* =========================================================
+   FINAL MOBILE OVERRIDE
+   放在 </style> 前最后面
+   只改移动端视觉，不影响 Airtable / Make 动态数据
+   ========================================================= */
 
+/* Collection 打开后的图片列表：手机端放大 */
+@media (max-width: 900px), (pointer: coarse) {
+  .pg-inner-grid {
+    padding: 14px 16px 32px !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+
+  .pg-thumb {
+    width: 100% !important;
+    aspect-ratio: 3 / 4 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    background: #111 !important;
+  }
+
+  .pg-thumb img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+}
+
+/* 比较宽的手机 / 小平板：自动 3 列 */
+@media (min-width: 640px) and (max-width: 900px) {
+  .pg-inner-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+/* 单图打开后：图片稍微缩一点，把空间留给标题和导航 */
+@media (max-width: 900px), (pointer: coarse) {
+  .pg-single {
+    justify-content: center !important;
+  }
+
+  .pg-single img {
+    max-width: 92vw !important;
+    max-height: 70vh !important;
+    border-radius: 8px !important;
+  }
+
+  #pg-single-caption {
+    font-size: clamp(16px, 4.2vw, 19px) !important;
+    line-height: 1.3 !important;
+    font-weight: 500 !important;
+    color: rgba(255,255,255,.92) !important;
+    margin-top: 16px !important;
+    padding: 0 18px !important;
+    max-width: 94vw !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .pg-single-nav {
+    gap: clamp(36px, 10vw, 56px) !important;
+    margin-top: 20px !important;
+  }
+
+  .pg-nav-btn {
+    width: clamp(78px, 20vw, 96px) !important;
+    height: clamp(78px, 20vw, 96px) !important;
+    background: rgba(255,255,255,.2) !important;
+  }
+
+  .pg-nav-btn svg {
+    width: clamp(44px, 11vw, 54px) !important;
+    height: clamp(44px, 11vw, 54px) !important;
+    stroke-width: 3 !important;
+  }
+
+  .pg-single-counter {
+    font-size: 15px !important;
+    min-width: 58px !important;
+  }
+}
   
 </style>
 
