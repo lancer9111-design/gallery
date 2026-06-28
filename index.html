@@ -74,7 +74,7 @@
   <div class="pg-grid" id="pg-grid"></div>
 </div>
 
-<div class="pg-overlay" id="pg-overlay">
+<div class="pg-overlay" id="pg-overlay" onclick="pgOverlayClick(event)">
   <div class="pg-topbar">
     <h2 id="pg-title"></h2>
     <button class="pg-close" onclick="pgClose()">✕</button>
@@ -82,7 +82,7 @@
   <div class="pg-inner-grid" id="pg-inner-grid"></div>
 </div>
 
-<div class="pg-single" id="pg-single">
+<div class="pg-single" id="pg-single" onclick="pgSingleClick(event)">
   <button class="pg-single-close" onclick="pgSingleClose()">✕</button>
   <img id="pg-single-img" src="" alt="">
   <div class="pg-single-nav">
@@ -272,6 +272,16 @@ function pgNav(dir) {
   const imgs = GALLERIES[currentGallery].images;
   currentImg = (currentImg + dir + imgs.length) % imgs.length;
   pgSingleOpen(currentImg);
+}
+
+function pgOverlayClick(e) {
+  // close if clicking the dark backdrop (not the topbar or grid)
+  if (e.target === document.getElementById('pg-overlay')) pgClose();
+}
+
+function pgSingleClick(e) {
+  // close if clicking the dark backdrop (not the image or nav)
+  if (e.target === document.getElementById('pg-single')) pgSingleClose();
 }
 
 document.addEventListener('keydown', e => {
