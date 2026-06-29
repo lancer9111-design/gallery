@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Visual Core Lookbook</title>
+<title>Visual Core Gallery</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -15,7 +15,6 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Site Header ── */
 .pg-site-title {
   max-width: 1100px;
   margin: 0 auto;
@@ -35,69 +34,50 @@ html, body {
   line-height: 1.6;
 }
 
-/* ── Collection Grid ── */
 .pg-wrap {
   max-width: 1100px;
   margin: 0 auto;
   padding: 28px 20px 60px;
 }
-
 .pg-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
-
-/* PC: 3 cols | Tablet: 2 cols | Mobile: 2 cols */
 @media (max-width: 800px) {
   .pg-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
 
 .pg-album {
-  position: relative;
-  cursor: pointer;
-  border-radius: 12px;
-  overflow: hidden;
-  aspect-ratio: 3/4;
-  background: #111;
+  position: relative; cursor: pointer;
+  border-radius: 12px; overflow: hidden;
+  aspect-ratio: 3/4; background: #111;
   transition: transform .2s, box-shadow .2s;
 }
 .pg-album:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.4); }
-.pg-album img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
-}
+.pg-album img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pg-album-label {
   position: absolute; bottom: 0; left: 0; right: 0;
   background: linear-gradient(transparent, rgba(0,0,0,.72));
-  color: #fff;
-  padding: 36px 14px 14px;
+  color: #fff; padding: 36px 14px 14px;
   font-size: 15px; font-weight: 600;
 }
 .pg-album-count { font-size: 12px; font-weight: 400; opacity: .75; margin-top: 3px; }
-
 .pg-loading, .pg-error {
-  color: rgba(255,255,255,.7);
-  background: #111;
-  border-radius: 12px;
-  padding: 28px 18px;
-  text-align: center;
-  font-size: 14px;
+  color: rgba(255,255,255,.7); background: #111;
+  border-radius: 12px; padding: 28px 18px;
+  text-align: center; font-size: 14px;
 }
 
 /* ── Collection Overlay ── */
 .pg-overlay {
-  display: none;
-  position: fixed; inset: 0; z-index: 9999;
-  background: rgba(0,0,0,.94);
-  flex-direction: column;
+  display: none; position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,.94); flex-direction: column;
 }
 .pg-overlay.open { display: flex; }
-
 .pg-topbar {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 20px;
-  color: #fff; flex-shrink: 0;
+  padding: 14px 20px; color: #fff; flex-shrink: 0;
   border-bottom: 1px solid rgba(255,255,255,.1);
 }
 .pg-topbar h2 { font-size: 16px; font-weight: 600; margin: 0; }
@@ -107,56 +87,50 @@ html, body {
   display: flex; align-items: center; justify-content: center;
 }
 .pg-close:hover { opacity: 1; }
-
 .pg-inner-grid {
-  flex: 1; overflow-y: auto;
-  padding: 18px 20px 28px;
+  flex: 1; overflow-y: auto; padding: 18px 20px 28px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  align-content: start;
+  gap: 12px; align-content: start;
 }
-@media (min-width: 600px) { .pg-inner-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; } }
+@media (min-width: 600px) { .pg-inner-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 900px) { .pg-inner-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; } }
-
 .pg-thumb {
   width: 100%; aspect-ratio: 3/4;
   border-radius: 10px; overflow: hidden;
   cursor: zoom-in; background: #111;
 }
 .pg-thumb img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
+  width: 100%; height: 100%; object-fit: cover; display: block;
   transition: opacity .15s;
 }
 .pg-thumb:hover img { opacity: .85; }
 
 /* ── Single Image Lightbox ── */
 .pg-single {
-  display: none;
-  position: fixed; inset: 0; z-index: 10000;
+  display: none; position: fixed; inset: 0; z-index: 10000;
   background: rgba(0,0,0,.97);
   align-items: center; justify-content: center;
-  flex-direction: column;
-  padding: 18px 14px 28px;
-  overflow: hidden;
+  flex-direction: column; overflow: hidden;
 }
 .pg-single.open { display: flex; }
 
-/* Image with fade transition */
+/* Image area — grows to fill, caption+nav stay at bottom */
 .pg-single-img-wrap {
   position: relative;
   display: flex; align-items: center; justify-content: center;
-  width: 100%; flex: 1;
+  width: 100%;
+  flex: 1;
   min-height: 0;
+  padding: 56px 12px 0; /* top padding for close btn */
 }
 .pg-single-img-wrap img {
   max-width: 90vw;
-  max-height: calc(100vh - 190px);
+  max-height: 100%;
   border-radius: 8px;
   object-fit: contain;
   position: absolute;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
   opacity: 0;
   pointer-events: none;
 }
@@ -165,24 +139,37 @@ html, body {
   pointer-events: auto;
 }
 
-.pg-single-caption {
-  display: block;
-  color: rgba(255,255,255,.9);
-  font-size: clamp(15px, 1.1vw, 18px);
-  line-height: 1.35;
-  font-weight: 500;
-  margin-top: 14px;
-  padding: 0 18px;
-  max-width: 92vw;
+/* ── Caption: 2-line layout ── */
+.pg-caption-wrap {
+  flex-shrink: 0;
+  padding: 12px 20px 6px;
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 94vw;
+  width: 100%;
+}
+.pg-caption-title {
+  color: rgba(255,255,255,.95);
+  font-size: clamp(14px, 4vw, 17px);
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: normal;
+  word-break: break-word;
+  margin-bottom: 4px;
+}
+.pg-caption-meta {
+  color: rgba(255,255,255,.45);
+  font-size: clamp(12px, 3.2vw, 14px);
+  font-weight: 400;
+  line-height: 1.3;
 }
 
 .pg-single-nav {
+  flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  gap: 34px; margin-top: 18px; color: #fff;
+  gap: 34px;
+  padding: 10px 0 20px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  color: #fff;
 }
 .pg-nav-btn {
   background: rgba(255,255,255,.18); border: none; color: #fff;
@@ -200,32 +187,27 @@ html, body {
 }
 
 .pg-single-close {
-  position: fixed; top: 16px; right: 20px;
+  position: absolute; top: 12px; right: 16px;
   background: none; border: none; color: #fff;
   cursor: pointer; z-index: 10001;
-  opacity: .75; padding: 4px;
+  opacity: .75; padding: 6px;
   display: flex; align-items: center; justify-content: center;
 }
 .pg-single-close:hover { opacity: 1; }
 .pg-single-close svg, .pg-close svg { width: 26px; height: 26px; }
 
-/* ── Mobile overrides ── */
+/* Mobile tweaks */
 @media (max-width: 600px) {
   .pg-site-title { padding: 28px 14px 6px; }
   .pg-wrap { padding: 18px 14px; }
   .pg-album { border-radius: 10px; }
   .pg-album-label { font-size: 14px; padding: 32px 12px 12px; }
   .pg-topbar { padding: 14px 18px; }
-  .pg-topbar h2 { font-size: 15px; }
   .pg-inner-grid { padding: 14px 14px 24px; gap: 10px; }
-  .pg-single { padding: 14px 10px 26px; }
-  .pg-single-img-wrap img { max-width: 92vw; max-height: calc(100vh - 210px); }
-  .pg-single-caption { font-size: clamp(14px, 4vw, 17px); margin-top: 12px; }
-  .pg-single-nav { gap: clamp(28px, 8vw, 44px); margin-top: 16px; }
-  .pg-nav-btn { width: clamp(64px, 17vw, 80px); height: clamp(64px, 17vw, 80px); }
-  .pg-nav-btn svg { width: clamp(36px, 9vw, 44px); height: clamp(36px, 9vw, 44px); }
-  .pg-single-close { top: 14px; right: 16px; }
-  .pg-single-close svg, .pg-close svg { width: clamp(20px, 5.4vw, 26px); height: clamp(20px, 5.4vw, 26px); }
+  .pg-nav-btn { width: clamp(60px, 16vw, 72px); height: clamp(60px, 16vw, 72px); }
+  .pg-nav-btn svg { width: clamp(32px, 8vw, 40px); height: clamp(32px, 8vw, 40px); }
+  .pg-single-close svg { width: 24px; height: 24px; }
+  .pg-single-nav { gap: clamp(24px, 8vw, 40px); }
 }
 @media (min-width: 640px) and (max-width: 899px) {
   .pg-inner-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -260,13 +242,17 @@ html, body {
 
 <!-- Single image lightbox -->
 <div class="pg-single" id="pg-single" onclick="pgSingleClick(event)">
-  <button class="pg-single-close" onclick="pgSingleClose()" aria-label="Close">
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-    </svg>
-  </button>
-  <div class="pg-single-img-wrap" id="pg-img-wrap"></div>
-  <div id="pg-single-caption" class="pg-single-caption"></div>
+  <div class="pg-single-img-wrap" id="pg-img-wrap">
+    <button class="pg-single-close" onclick="pgSingleClose()" aria-label="Close">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="pg-caption-wrap">
+    <div class="pg-caption-title" id="pg-caption-title"></div>
+    <div class="pg-caption-meta" id="pg-caption-meta"></div>
+  </div>
   <div class="pg-single-nav">
     <button class="pg-nav-btn" onclick="pgNav(-1)" aria-label="Previous">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
@@ -293,7 +279,8 @@ const grid = document.getElementById('pg-grid');
 const overlay = document.getElementById('pg-overlay');
 const single = document.getElementById('pg-single');
 const imgWrap = document.getElementById('pg-img-wrap');
-const singleCaption = document.getElementById('pg-single-caption');
+const captionTitle = document.getElementById('pg-caption-title');
+const captionMeta = document.getElementById('pg-caption-meta');
 const singleCounter = document.getElementById('pg-single-counter');
 
 async function pgLoadData() {
@@ -320,17 +307,32 @@ async function pgLoadData() {
 }
 
 function pgNormalizeItem(item, gallery) {
-  if (typeof item === 'string') return { url: item, category: gallery.category || '', title: gallery.title || '' };
+  if (typeof item === 'string') return { url: item, category: gallery.category || '', title: gallery.title || '', date: '' };
   if (typeof item === 'object' && item !== null) return {
     url: item.url || item.URL || item.imageurl || item.imageUrl || item.ImageURL || item['Image URL'] || item.image || item.Image || '',
     category: item.category || item.Category || gallery.category || gallery.Category || '',
-    title: item.title || item.Title || item.name || item.Name || gallery.title || gallery.Title || ''
+    title: item.title || item.Title || item.name || item.Name || gallery.title || gallery.Title || '',
+    date: item.date || item.Date || item.created_at || ''
   };
-  return { url: '', category: '', title: '' };
+  return { url: '', category: '', title: '', date: '' };
 }
 
-function pgGetCaption(item) {
-  return [item.category, item.title].filter(Boolean).join(' · ');
+function pgFormatDate(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d)) return dateStr;
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    return dd + '.' + mm + '.' + yyyy;
+  } catch (e) { return dateStr; }
+}
+
+function pgSetCaption(item) {
+  captionTitle.textContent = item.title || '';
+  const parts = [item.category, pgFormatDate(item.date)].filter(Boolean);
+  captionMeta.textContent = parts.join(' | ');
 }
 
 function pgRenderAlbums() {
@@ -364,11 +366,10 @@ function pgOpen(i) {
   const inner = document.getElementById('pg-inner-grid');
   inner.innerHTML = '';
   g.images.forEach((item, j) => {
-    const caption = pgGetCaption(item);
     const d = document.createElement('div');
     d.className = 'pg-thumb';
     const img = document.createElement('img');
-    img.src = item.url; img.alt = caption || g.name; img.loading = 'lazy';
+    img.src = item.url; img.alt = item.title || g.name; img.loading = 'lazy';
     d.appendChild(img);
     d.onclick = () => pgSingleOpen(j);
     inner.appendChild(d);
@@ -382,13 +383,15 @@ function pgClose() {
   document.body.style.overflow = '';
 }
 
-// ── Lightbox with fade transition ──
 function pgBuildImgWrap(gallery) {
+  // remove old imgs (keep close button)
+  const closeBtn = imgWrap.querySelector('.pg-single-close');
   imgWrap.innerHTML = '';
+  if (closeBtn) imgWrap.appendChild(closeBtn);
   gallery.images.forEach((item, j) => {
     const img = document.createElement('img');
     img.src = item.url;
-    img.alt = pgGetCaption(item) || gallery.name;
+    img.alt = item.title || gallery.name;
     img.loading = 'lazy';
     if (j === currentImg) img.classList.add('active');
     imgWrap.appendChild(img);
@@ -399,7 +402,7 @@ function pgSingleOpen(j) {
   currentImg = j;
   const g = GALLERIES[currentGallery];
   pgBuildImgWrap(g);
-  singleCaption.textContent = pgGetCaption(g.images[j]);
+  pgSetCaption(g.images[j]);
   singleCounter.textContent = (j + 1) + ' / ' + g.images.length;
   single.classList.add('open');
 }
@@ -411,29 +414,21 @@ function pgSingleClose() {
 function pgNav(dir) {
   if (isTransitioning) return;
   const imgs = GALLERIES[currentGallery].images;
-  const allImgEls = imgWrap.querySelectorAll('img');
+  const allImgEls = Array.from(imgWrap.querySelectorAll('img'));
   const current = allImgEls[currentImg];
-
   currentImg = (currentImg + dir + imgs.length) % imgs.length;
   const next = allImgEls[currentImg];
-
   isTransitioning = true;
-  // fade out current, fade in next
-  current.style.transition = 'opacity 0.25s ease';
-  next.style.transition = 'opacity 0.25s ease';
   current.classList.remove('active');
   next.classList.add('active');
-
   setTimeout(() => { isTransitioning = false; }, 300);
-
-  singleCaption.textContent = pgGetCaption(imgs[currentImg]);
+  pgSetCaption(imgs[currentImg]);
   singleCounter.textContent = (currentImg + 1) + ' / ' + imgs.length;
 }
 
 function pgOverlayClick(e) { if (e.target === overlay) pgClose(); }
 function pgSingleClick(e) { if (e.target === single) pgSingleClose(); }
 
-// Keyboard
 document.addEventListener('keydown', e => {
   const singleOpen = single.classList.contains('open');
   if (e.key === 'Escape') { pgSingleClose(); pgClose(); }
@@ -442,7 +437,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') pgNav(-1);
 });
 
-// Touch swipe
 let tx = 0;
 single.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
 single.addEventListener('touchend', e => {
