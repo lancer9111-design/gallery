@@ -1,27 +1,6 @@
 {
   "galleries": [
-    {
-      "name": "tomato girl",
-      "images": [
         {
-          "order": 5,
-          "url": "https://your-r2-domain.com/tomato-girl/005.jpg",
-          "title": "Summer afternoon",
-          "category": "tomato girl",
-          "date": "2026-06-29",
-          "cover": true
-        },
-        {
-          "order": 4,
-          "url": "https://your-r2-domain.com/tomato-girl/004.jpg",
-          "title": "Red dress series",
-          "category": "tomato girl",
-          "date": "2026-06-28",
-          "cover": false
-        }
-      ]
-    },
-    {
       "name": "streetwear",
       "images": [
         {
