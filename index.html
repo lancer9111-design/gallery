@@ -11,15 +11,12 @@ html, body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   min-height: 100dvh; -webkit-font-smoothing: antialiased;
 }
-
 .pg-site-title { max-width: 1100px; margin: 0 auto; padding: 40px 20px 12px; }
 .pg-site-title h1 { font-size: clamp(30px,5vw,56px); line-height:1; letter-spacing:-0.04em; font-weight:700; }
 .pg-site-title p { margin:10px 0 0; max-width:560px; color:rgba(255,255,255,.55); font-size:15px; line-height:1.6; }
-
 .pg-wrap { max-width:1100px; margin:0 auto; padding:28px 20px 60px; }
 .pg-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
 @media (max-width:800px) { .pg-grid { grid-template-columns:repeat(2,1fr); gap:12px; } }
-
 .pg-album {
   position:relative; cursor:pointer; border-radius:12px; overflow:hidden;
   aspect-ratio:3/4; background:#111; transition:transform .2s,box-shadow .2s;
@@ -36,56 +33,23 @@ html, body {
   color:rgba(255,255,255,.7); background:#111; border-radius:12px;
   padding:28px 18px; text-align:center; font-size:14px;
 }
-
-/* ── Footer ── */
-.pg-footer {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 20px 48px;
-}
-.pg-footer-divider {
-  border: none;
-  border-top: 1px solid rgba(255,255,255,.1);
-  margin-bottom: 28px;
-}
-.pg-footer-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.pg-footer-copy {
-  color: rgba(255,255,255,.3);
-  font-size: 13px;
-}
+.pg-footer { max-width:1100px; margin:0 auto; padding:0 20px 48px; }
+.pg-footer-divider { border:none; border-top:1px solid rgba(255,255,255,.1); margin-bottom:28px; }
+.pg-footer-inner { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.pg-footer-copy { color:rgba(255,255,255,.3); font-size:13px; }
 .pg-linktree-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.12);
-  color: rgba(255,255,255,.75);
-  text-decoration: none;
-  padding: 9px 16px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 500;
-  transition: background .15s, color .15s, border-color .15s;
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.75); text-decoration:none;
+  padding:9px 16px; border-radius:999px; font-size:13px; font-weight:500;
+  transition:background .15s,color .15s,border-color .15s;
 }
-.pg-linktree-btn:hover {
-  background: rgba(255,255,255,.13);
-  color: #fff;
-  border-color: rgba(255,255,255,.25);
+.pg-linktree-btn:hover { background:rgba(255,255,255,.13); color:#fff; border-color:rgba(255,255,255,.25); }
+.pg-linktree-btn svg { width:16px; height:16px; flex-shrink:0; }
+@media (max-width:600px) {
+  .pg-footer { padding:0 14px 40px; }
+  .pg-footer-inner { justify-content:center; flex-direction:column; align-items:center; text-align:center; gap:12px; }
 }
-.pg-linktree-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
-
-@media (max-width: 600px) {
-  .pg-footer { padding: 0 14px 40px; }
-  .pg-footer-inner { justify-content: center; flex-direction: column; align-items: center; text-align: center; gap: 12px; }
-}
-
-/* Collection Overlay */
 .pg-overlay { display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.94); flex-direction:column; }
 .pg-overlay.open { display:flex; }
 .pg-topbar {
@@ -106,12 +70,9 @@ html, body {
 .pg-thumb { width:100%; aspect-ratio:3/4; border-radius:10px; overflow:hidden; cursor:zoom-in; background:#111; }
 .pg-thumb img { width:100%; height:100%; object-fit:cover; display:block; transition:opacity .15s; }
 .pg-thumb:hover img { opacity:.85; }
-
-/* Single Image Lightbox */
 .pg-single {
   display:none; position:fixed; inset:0; z-index:10000;
-  background:rgba(0,0,0,.97);
-  align-items:center; justify-content:center;
+  background:rgba(0,0,0,.97); align-items:center; justify-content:center;
   flex-direction:column; overflow:hidden;
 }
 .pg-single.open { display:flex; }
@@ -124,34 +85,29 @@ html, body {
   position:absolute; transition:opacity 0.25s ease; opacity:0; pointer-events:none;
 }
 .pg-single-img-wrap img.active { opacity:1; pointer-events:auto; }
-
 .pg-pinterest-btn {
   position:absolute; bottom:14px; right:16px;
   display:flex; align-items:center; justify-content:center;
   background:#E60023; border:none; color:#fff;
   width:42px; height:42px; border-radius:50%;
   cursor:pointer; text-decoration:none;
-  transition:background .15s, transform .15s;
+  transition:background .15s,transform .15s;
   box-shadow:0 2px 12px rgba(0,0,0,.5);
   opacity:0.88; z-index:20;
 }
 .pg-pinterest-btn:hover { background:#c0001e; transform:scale(1.08); opacity:1; }
 .pg-pinterest-btn:active { transform:scale(.95); }
 .pg-pinterest-btn svg { width:20px; height:20px; }
-
 .pg-single-close {
   position:absolute; top:12px; right:16px;
   background:none; border:none; color:#fff;
-  cursor:pointer; z-index:10001; opacity:.75; padding:6px;
-  display:flex; align-items:center;
+  cursor:pointer; z-index:10001; opacity:.75; padding:6px; display:flex; align-items:center;
 }
 .pg-single-close:hover { opacity:1; }
 .pg-single-close svg,.pg-close svg { width:26px; height:26px; }
-
 .pg-caption-wrap { flex-shrink:0; padding:12px 20px 4px; text-align:center; max-width:94vw; width:100%; }
 .pg-caption-title { color:rgba(255,255,255,.95); font-size:clamp(14px,4vw,17px); font-weight:600; line-height:1.35; white-space:normal; word-break:break-word; margin-bottom:4px; }
 .pg-caption-meta { color:rgba(255,255,255,.45); font-size:clamp(12px,3.2vw,14px); line-height:1.3; }
-
 .pg-single-nav {
   flex-shrink:0; display:flex; align-items:center; justify-content:center;
   gap:34px; padding:10px 0 20px;
@@ -161,13 +117,12 @@ html, body {
   background:rgba(255,255,255,.18); border:none; color:#fff;
   width:54px; height:54px; border-radius:50%; cursor:pointer;
   display:flex; align-items:center; justify-content:center;
-  transition:background .15s, transform .15s;
+  transition:background .15s,transform .15s;
 }
 .pg-nav-btn:hover { background:rgba(255,255,255,.3); }
 .pg-nav-btn:active { transform:scale(.96); }
 .pg-nav-btn svg { width:32px; height:32px; }
 .pg-single-counter { font-size:14px; color:rgba(255,255,255,.6); min-width:52px; text-align:center; }
-
 @media (max-width:600px) {
   .pg-site-title { padding:28px 14px 6px; }
   .pg-wrap { padding:18px 14px; }
@@ -199,7 +154,6 @@ html, body {
   </div>
 </div>
 
-<!-- Footer -->
 <footer class="pg-footer">
   <hr class="pg-footer-divider">
   <div class="pg-footer-inner">
@@ -213,7 +167,6 @@ html, body {
   </div>
 </footer>
 
-<!-- Collection overlay -->
 <div class="pg-overlay" id="pg-overlay" onclick="pgOverlayClick(event)">
   <div class="pg-topbar">
     <h2 id="pg-title"></h2>
@@ -226,7 +179,6 @@ html, body {
   <div class="pg-inner-grid" id="pg-inner-grid"></div>
 </div>
 
-<!-- Single image lightbox -->
 <div class="pg-single" id="pg-single" onclick="pgSingleClick(event)">
   <div class="pg-single-img-wrap" id="pg-img-wrap">
     <button class="pg-single-close" onclick="pgSingleClose()" aria-label="Close">
@@ -257,6 +209,7 @@ html, body {
 
 <script>
 const DATA_URL = './gallery-data.json';
+const SITE_URL = 'https://visual-core.pages.dev';
 let GALLERIES = [], currentGallery = 0, currentImg = 0, isTransitioning = false;
 
 const grid = document.getElementById('pg-grid');
@@ -268,6 +221,14 @@ const captionMeta = document.getElementById('pg-caption-meta');
 const singleCounter = document.getElementById('pg-single-counter');
 const pinterestBtn = document.getElementById('pg-pinterest-btn');
 
+// "tomato girl" → slug: "tomato-girl", display: "Tomato Girl"
+function pgSlug(str) {
+  return (str || '').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+function pgTitleCase(str) {
+  return (str || '').replace(/\b\w/g, c => c.toUpperCase());
+}
+
 async function pgLoadData() {
   try {
     const res = await fetch(DATA_URL, { cache: 'no-store' });
@@ -277,9 +238,17 @@ async function pgLoadData() {
       .map(g => {
         const images = (Array.isArray(g.images) ? g.images : [])
           .map(item => pgNormalizeItem(item, g)).filter(i => i.url);
+        images.sort((a, b) => (b.order || 0) - (a.order || 0));
+        const rawName = g.name || g.category || g.Category || 'uncategorized';
+        // cover: manual override first, else highest order image
+        const manualCover = images.find(i => i.cover);
+        const coverUrl = g.cover || g.coverUrl || g.coverurl || g.Cover
+          || (manualCover ? manualCover.url : '')
+          || (images[0]?.url || '');
         return {
-          name: g.name || g.collection || g.Collection || 'Untitled',
-          cover: g.cover || g.coverurl || g.coverUrl || g.Cover || (images[0]?.url || ''),
+          name: pgTitleCase(rawName),
+          slug: pgSlug(rawName),
+          cover: coverUrl,
           images
         };
       }).filter(g => g.images.length > 0);
@@ -291,14 +260,16 @@ async function pgLoadData() {
 }
 
 function pgNormalizeItem(item, gallery) {
-  if (typeof item === 'string') return { url: item, category: gallery.category||'', title: gallery.title||'', date:'' };
+  if (typeof item === 'string') return { url: item, title:'', category: gallery.name||'', date:'', order:0, cover:false };
   if (typeof item === 'object' && item) return {
-    url: item.url||item.URL||item.imageurl||item.imageUrl||item.ImageURL||item['Image URL']||item.image||item.Image||'',
-    category: item.category||item.Category||gallery.category||gallery.Category||'',
-    title: item.title||item.Title||item.name||item.Name||gallery.title||gallery.Title||'',
-    date: item.date||item.Date||item.created_at||''
+    url: item.url || item.URL || item.Img_url || item.img_url || item.imageUrl || item['Image URL'] || '',
+    title: item.title || item.Title || item['Img Title'] || item.img_title || '',
+    category: item.category || item.Category || gallery.name || '',
+    date: item.date || item.Date || '',
+    order: parseInt(item.order || item.Order || 0) || 0,
+    cover: !!(item.cover || item.Cover)
   };
-  return { url:'', category:'', title:'', date:'' };
+  return { url:'', title:'', category:'', date:'', order:0, cover:false };
 }
 
 function pgFormatDate(d) {
@@ -312,27 +283,38 @@ function pgFormatDate(d) {
 
 function pgSetCaption(item) {
   captionTitle.textContent = item.title || '';
-  captionMeta.textContent = [item.category, pgFormatDate(item.date)].filter(Boolean).join(' | ');
+  captionMeta.textContent = [pgTitleCase(item.category), pgFormatDate(item.date)].filter(Boolean).join(' | ');
 }
 
-function pgUpdatePinterest(item) {
-  const pageUrl = encodeURIComponent(window.location.href);
+function pgUpdatePinterest(item, slug) {
+  const pageUrl = encodeURIComponent(`${SITE_URL}/#/${slug}/${item.order}`);
   const mediaUrl = encodeURIComponent(item.url);
-  const desc = encodeURIComponent([item.title, item.category].filter(Boolean).join(' · '));
+  const desc = encodeURIComponent([item.title, pgTitleCase(item.category)].filter(Boolean).join(' · '));
   pinterestBtn.href = `https://pinterest.com/pin/create/button/?url=${pageUrl}&media=${mediaUrl}&description=${desc}`;
 }
 
-function pgSetHash(ci, ii) {
-  history.replaceState(null, '', ii !== undefined ? `#collection-${ci}-image-${ii}` : `#collection-${ci}`);
+function pgSetHash(slug, order) {
+  history.replaceState(null, '', order !== undefined ? `#/${slug}/${order}` : `#/${slug}`);
 }
 
 function pgHandleHash() {
   const hash = window.location.hash;
-  if (!hash) return;
-  const imgM = hash.match(/^#collection-(\d+)-image-(\d+)$/);
-  if (imgM) { const ci=+imgM[1],ii=+imgM[2]; if (GALLERIES[ci]?.images[ii]) { pgOpen(ci); pgSingleOpen(ii); return; } }
-  const colM = hash.match(/^#collection-(\d+)$/);
-  if (colM && GALLERIES[+colM[1]]) pgOpen(+colM[1]);
+  if (!hash || hash === '#') return;
+  const imgM = hash.match(/^\/#\/([^/]+)\/(\d+)$/);
+  if (imgM) {
+    const slug = imgM[1], order = parseInt(imgM[2]);
+    const ci = GALLERIES.findIndex(g => g.slug === slug);
+    if (ci >= 0) {
+      const ii = GALLERIES[ci].images.findIndex(img => img.order === order);
+      if (ii >= 0) { pgOpen(ci); pgSingleOpen(ii); return; }
+      pgOpen(ci); return;
+    }
+  }
+  const colM = hash.match(/^\/#\/([^/]+)$/);
+  if (colM) {
+    const ci = GALLERIES.findIndex(g => g.slug === colM[1]);
+    if (ci >= 0) pgOpen(ci);
+  }
 }
 
 function pgRenderAlbums() {
@@ -360,7 +342,7 @@ function pgOpen(i) {
     d.appendChild(img); d.onclick = () => pgSingleOpen(j); inner.appendChild(d);
   });
   overlay.classList.add('open'); document.body.style.overflow = 'hidden';
-  pgSetHash(i);
+  pgSetHash(g.slug);
 }
 
 function pgClose() {
@@ -388,27 +370,30 @@ function pgSingleOpen(j) {
   const g = GALLERIES[currentGallery];
   pgBuildImgWrap(g);
   pgSetCaption(g.images[j]);
-  pgUpdatePinterest(g.images[j]);
+  pgUpdatePinterest(g.images[j], g.slug);
   singleCounter.textContent = (j+1) + ' / ' + g.images.length;
   single.classList.add('open');
-  pgSetHash(currentGallery, j);
+  pgSetHash(g.slug, g.images[j].order);
 }
 
-function pgSingleClose() { single.classList.remove('open'); pgSetHash(currentGallery); }
+function pgSingleClose() {
+  single.classList.remove('open');
+  pgSetHash(GALLERIES[currentGallery].slug);
+}
 
 function pgNav(dir) {
   if (isTransitioning) return;
-  const imgs = GALLERIES[currentGallery].images;
+  const g = GALLERIES[currentGallery];
   const allImgs = Array.from(imgWrap.querySelectorAll('img'));
   allImgs[currentImg].classList.remove('active');
-  currentImg = (currentImg + dir + imgs.length) % imgs.length;
+  currentImg = (currentImg + dir + g.images.length) % g.images.length;
   allImgs[currentImg].classList.add('active');
   isTransitioning = true;
   setTimeout(() => { isTransitioning = false; }, 300);
-  pgSetCaption(imgs[currentImg]);
-  pgUpdatePinterest(imgs[currentImg]);
-  singleCounter.textContent = (currentImg+1) + ' / ' + imgs.length;
-  pgSetHash(currentGallery, currentImg);
+  pgSetCaption(g.images[currentImg]);
+  pgUpdatePinterest(g.images[currentImg], g.slug);
+  singleCounter.textContent = (currentImg+1) + ' / ' + g.images.length;
+  pgSetHash(g.slug, g.images[currentImg].order);
 }
 
 function pgOverlayClick(e) { if (e.target === overlay) pgClose(); }
