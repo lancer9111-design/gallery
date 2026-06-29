@@ -330,8 +330,8 @@ function pgSetCaption(item) {
   captionTitle.textContent = item.title || '';
   captionMeta.textContent = [pgTitleCase(item.category), pgFormatDate(item.date)].filter(Boolean).join(' | ');
 }
-function pgUpdatePinterest(item, slug) {
-  const pageUrl = encodeURIComponent(SITE_URL + '/#/' + slug + '/' + item.order);
+function pgUpdatePinterest(item, slug, index) {
+  const pageUrl = encodeURIComponent(SITE_URL + '/#/' + slug + '/' + index);
   const mediaUrl = encodeURIComponent(item.url);
   const desc = encodeURIComponent([item.title, pgTitleCase(item.category)].filter(Boolean).join(' · '));
   pinterestBtn.href = 'https://pinterest.com/pin/create/button/?url=' + pageUrl + '&media=' + mediaUrl + '&description=' + desc;
@@ -341,10 +341,10 @@ function pgSingleOpen(j) {
   const g = GALLERIES[currentGallery];
   pgBuildImages(g);
   pgSetCaption(g.images[j]);
-  pgUpdatePinterest(g.images[j], g.slug);
+  pgUpdatePinterest(g.images[j], g.slug, j);
   singleCounter.textContent = (j + 1) + ' / ' + g.images.length;
   single.classList.add('open');
-  pgSetHash(g.slug, g.images[j].order);
+  pgSetHash(g.slug, j);
 }
 function pgSingleClose() {
   single.classList.remove('open');
@@ -361,12 +361,12 @@ function pgNav(dir) {
   isTransitioning = true;
   setTimeout(() => { isTransitioning = false; }, 300);
   pgSetCaption(g.images[currentImg]);
-  pgUpdatePinterest(g.images[currentImg], g.slug);
+  pgUpdatePinterest(g.images[currentImg], g.slug, currentImg);
   singleCounter.textContent = (currentImg + 1) + ' / ' + g.images.length;
-  pgSetHash(g.slug, g.images[currentImg].order);
+  pgSetHash(g.slug, currentImg);
 }
-function pgSetHash(slug, order) {
-  history.replaceState(null, '', order !== undefined ? '#/' + slug + '/' + order : '#/' + slug);
+function pgSetHash(slug, index) {
+  history.replaceState(null, '', index !== undefined ? '#/' + slug + '/' + index : '#/' + slug);
 }
 function pgHandleHash() {
   const hash = window.location.hash;
@@ -374,16 +374,13 @@ function pgHandleHash() {
   const imgM = hash.match(/^#\/([^/]+)\/(\d+)$/);
   if (imgM) {
     const slug = imgM[1];
-    const order = parseInt(imgM[2], 10);
+    const index = parseInt(imgM[2], 10);
     const ci = GALLERIES.findIndex(g => g.slug === slug);
     if (ci >= 0) {
-      const ii = GALLERIES[ci].images.findIndex(img => Number(img.order) === order);
-      if (ii >= 0) {
-        pgOpen(ci);
-        pgSingleOpen(ii);
-        return;
-      }
+      // Use index directly as array position (0-based)
+      const ii = index < GALLERIES[ci].images.length ? index : 0;
       pgOpen(ci);
+      pgSingleOpen(ii);
       return;
     }
   }
