@@ -11,9 +11,13 @@ html, body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   min-height: 100dvh; -webkit-font-smoothing: antialiased;
 }
+
+/* ── Site Header ── */
 .pg-site-title { max-width: 1100px; margin: 0 auto; padding: 40px 20px 12px; }
 .pg-site-title h1 { font-size: clamp(30px,5vw,56px); line-height:1; letter-spacing:-0.04em; font-weight:700; }
 .pg-site-title p { margin:10px 0 0; max-width:560px; color:rgba(255,255,255,.55); font-size:15px; line-height:1.6; }
+
+/* ── Album Grid ── */
 .pg-wrap { max-width:1100px; margin:0 auto; padding:28px 20px 60px; }
 .pg-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
 @media (max-width:800px) { .pg-grid { grid-template-columns:repeat(2,1fr); gap:12px; } }
@@ -25,14 +29,17 @@ html, body {
 .pg-album img { width:100%; height:100%; object-fit:cover; display:block; }
 .pg-album-label {
   position:absolute; bottom:0; left:0; right:0;
-  background:linear-gradient(transparent,rgba(0,0,0,.72));
-  color:#fff; padding:36px 14px 14px; font-size:15px; font-weight:600;
+  background:linear-gradient(transparent,rgba(0,0,0,.75));
+  color:#fff; padding:40px 14px 14px; font-size:15px; font-weight:600;
+  pointer-events:none;
 }
 .pg-album-count { font-size:12px; font-weight:400; opacity:.75; margin-top:3px; }
 .pg-loading,.pg-error {
   color:rgba(255,255,255,.7); background:#111; border-radius:12px;
   padding:28px 18px; text-align:center; font-size:14px;
 }
+
+/* ── Footer ── */
 .pg-footer { max-width:1100px; margin:0 auto; padding:0 20px 48px; }
 .pg-footer-divider { border:none; border-top:1px solid rgba(255,255,255,.1); margin-bottom:28px; }
 .pg-footer-inner { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
@@ -46,10 +53,8 @@ html, body {
 }
 .pg-linktree-btn:hover { background:rgba(255,255,255,.13); color:#fff; border-color:rgba(255,255,255,.25); }
 .pg-linktree-btn svg { width:16px; height:16px; flex-shrink:0; }
-@media (max-width:600px) {
-  .pg-footer { padding:0 14px 40px; }
-  .pg-footer-inner { justify-content:center; flex-direction:column; align-items:center; text-align:center; gap:12px; }
-}
+
+/* ── Collection Overlay ── */
 .pg-overlay { display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.94); flex-direction:column; }
 .pg-overlay.open { display:flex; }
 .pg-topbar {
@@ -70,44 +75,59 @@ html, body {
 .pg-thumb { width:100%; aspect-ratio:3/4; border-radius:10px; overflow:hidden; cursor:zoom-in; background:#111; }
 .pg-thumb img { width:100%; height:100%; object-fit:cover; display:block; transition:opacity .15s; }
 .pg-thumb:hover img { opacity:.85; }
+
+/* ── Single Image View ── */
 .pg-single {
   display:none; position:fixed; inset:0; z-index:10000;
-  background:rgba(0,0,0,.97); align-items:center; justify-content:center;
-  flex-direction:column; overflow:hidden;
+  background:rgba(0,0,0,.97); flex-direction:column;
+  overflow:hidden;
 }
 .pg-single.open { display:flex; }
+
+/* Close button — fixed top right, always above image */
+.pg-single-close {
+  position:absolute; top:12px; right:16px;
+  background:none; border:none; color:#fff;
+  cursor:pointer; z-index:10; opacity:.75; padding:6px;
+  display:flex; align-items:center;
+}
+.pg-single-close:hover { opacity:1; }
+.pg-single-close svg { width:26px; height:26px; }
+
+/* Image area */
 .pg-single-img-wrap {
   position:relative; display:flex; align-items:center; justify-content:center;
-  width:100%; flex:1; min-height:0; padding:52px 12px 0;
+  flex:1; min-height:0; padding:56px 12px 12px;
 }
 .pg-single-img-wrap img {
-  max-width:90vw; max-height:100%; border-radius:8px; object-fit:contain;
-  position:absolute; transition:opacity 0.25s ease; opacity:0; pointer-events:none;
+  max-width:100%; max-height:100%; border-radius:8px; object-fit:contain;
+  position:absolute; top:56px; left:50%; transform:translateX(-50%);
+  bottom:12px; width:auto; height:auto;
+  max-width:calc(100% - 24px); max-height:calc(100% - 68px);
+  transition:opacity 0.25s ease; opacity:0; pointer-events:none;
 }
 .pg-single-img-wrap img.active { opacity:1; pointer-events:auto; }
+
+/* Pinterest button — bottom right of image wrap */
 .pg-pinterest-btn {
-  position:absolute; bottom:14px; right:16px;
+  position:absolute; bottom:20px; right:20px; z-index:5;
   display:flex; align-items:center; justify-content:center;
   background:#E60023; border:none; color:#fff;
   width:42px; height:42px; border-radius:50%;
   cursor:pointer; text-decoration:none;
   transition:background .15s,transform .15s;
   box-shadow:0 2px 12px rgba(0,0,0,.5);
-  opacity:0.88; z-index:20;
 }
-.pg-pinterest-btn:hover { background:#c0001e; transform:scale(1.08); opacity:1; }
+.pg-pinterest-btn:hover { background:#c0001e; transform:scale(1.08); }
 .pg-pinterest-btn:active { transform:scale(.95); }
 .pg-pinterest-btn svg { width:20px; height:20px; }
-.pg-single-close {
-  position:absolute; top:12px; right:16px;
-  background:none; border:none; color:#fff;
-  cursor:pointer; z-index:10001; opacity:.75; padding:6px; display:flex; align-items:center;
-}
-.pg-single-close:hover { opacity:1; }
-.pg-single-close svg,.pg-close svg { width:26px; height:26px; }
-.pg-caption-wrap { flex-shrink:0; padding:12px 20px 4px; text-align:center; max-width:94vw; width:100%; }
-.pg-caption-title { color:rgba(255,255,255,.95); font-size:clamp(14px,4vw,17px); font-weight:600; line-height:1.35; white-space:normal; word-break:break-word; margin-bottom:4px; }
-.pg-caption-meta { color:rgba(255,255,255,.45); font-size:clamp(12px,3.2vw,14px); line-height:1.3; }
+
+/* Caption */
+.pg-caption-wrap { flex-shrink:0; padding:10px 20px 4px; text-align:center; }
+.pg-caption-title { color:rgba(255,255,255,.95); font-size:clamp(14px,4vw,17px); font-weight:600; line-height:1.35; margin-bottom:4px; }
+.pg-caption-meta { color:rgba(255,255,255,.45); font-size:clamp(12px,3.2vw,14px); }
+
+/* Nav */
 .pg-single-nav {
   flex-shrink:0; display:flex; align-items:center; justify-content:center;
   gap:34px; padding:10px 0 20px;
@@ -123,21 +143,20 @@ html, body {
 .pg-nav-btn:active { transform:scale(.96); }
 .pg-nav-btn svg { width:32px; height:32px; }
 .pg-single-counter { font-size:14px; color:rgba(255,255,255,.6); min-width:52px; text-align:center; }
+
+/* ── Mobile ── */
 @media (max-width:600px) {
   .pg-site-title { padding:28px 14px 6px; }
   .pg-wrap { padding:18px 14px; }
   .pg-album { border-radius:10px; }
-  .pg-album-label { font-size:14px; padding:32px 12px 12px; }
   .pg-topbar { padding:14px 18px; }
   .pg-inner-grid { padding:14px 14px 24px; gap:10px; }
-  .pg-nav-btn { width:clamp(52px,14vw,64px); height:clamp(52px,14vw,64px); }
-  .pg-nav-btn svg { width:clamp(28px,7vw,36px); height:clamp(28px,7vw,36px); }
-  .pg-single-nav { gap:clamp(24px,8vw,40px); }
-  .pg-pinterest-btn { width:38px; height:38px; bottom:10px; right:10px; }
-  .pg-pinterest-btn svg { width:18px; height:18px; }
-}
-@media (min-width:640px) and (max-width:899px) {
-  .pg-inner-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .pg-nav-btn { width:clamp(48px,13vw,60px); height:clamp(48px,13vw,60px); }
+  .pg-nav-btn svg { width:clamp(26px,7vw,32px); height:clamp(26px,7vw,32px); }
+  .pg-single-nav { gap:clamp(20px,8vw,36px); }
+  .pg-pinterest-btn { width:38px; height:38px; bottom:14px; right:14px; }
+  .pg-footer { padding:0 14px 40px; }
+  .pg-footer-inner { justify-content:center; flex-direction:column; align-items:center; text-align:center; gap:12px; }
 }
 </style>
 </head>
@@ -167,11 +186,12 @@ html, body {
   </div>
 </footer>
 
-<div class="pg-overlay" id="pg-overlay" onclick="pgOverlayClick(event)">
+<!-- Collection Overlay -->
+<div class="pg-overlay" id="pg-overlay">
   <div class="pg-topbar">
     <h2 id="pg-title"></h2>
     <button class="pg-close" onclick="pgClose()" aria-label="Close">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
       </svg>
     </button>
@@ -179,23 +199,29 @@ html, body {
   <div class="pg-inner-grid" id="pg-inner-grid"></div>
 </div>
 
-<div class="pg-single" id="pg-single" onclick="pgSingleClick(event)">
+<!-- Single Image View -->
+<div class="pg-single" id="pg-single">
+  <button class="pg-single-close" onclick="pgSingleClose()" aria-label="Close">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+
   <div class="pg-single-img-wrap" id="pg-img-wrap">
-    <button class="pg-single-close" onclick="pgSingleClose()" aria-label="Close">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
-    </button>
-    <a id="pg-pinterest-btn" class="pg-pinterest-btn" href="#" target="_blank" rel="noopener noreferrer" aria-label="Save to Pinterest">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
-      </svg>
-    </a>
+    <!-- images injected here -->
   </div>
+
+  <a id="pg-pinterest-btn" class="pg-pinterest-btn" href="#" target="_blank" rel="noopener noreferrer" aria-label="Save to Pinterest">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
+    </svg>
+  </a>
+
   <div class="pg-caption-wrap">
     <div class="pg-caption-title" id="pg-caption-title"></div>
     <div class="pg-caption-meta" id="pg-caption-meta"></div>
   </div>
+
   <div class="pg-single-nav">
     <button class="pg-nav-btn" onclick="pgNav(-1)" aria-label="Previous">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -221,57 +247,12 @@ const captionMeta = document.getElementById('pg-caption-meta');
 const singleCounter = document.getElementById('pg-single-counter');
 const pinterestBtn = document.getElementById('pg-pinterest-btn');
 
-// "tomato girl" → slug: "tomato-girl", display: "Tomato Girl"
 function pgSlug(str) {
   return (str || '').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 function pgTitleCase(str) {
   return (str || '').replace(/\b\w/g, c => c.toUpperCase());
 }
-
-async function pgLoadData() {
-  try {
-    const res = await fetch(DATA_URL, { cache: 'no-store' });
-    if (!res.ok) throw new Error('Failed');
-    const data = await res.json();
-    GALLERIES = (Array.isArray(data) ? data : data.galleries || [])
-      .map(g => {
-        const images = (Array.isArray(g.images) ? g.images : [])
-          .map(item => pgNormalizeItem(item, g)).filter(i => i.url);
-        images.sort((a, b) => (b.order || 0) - (a.order || 0));
-        const rawName = g.name || g.category || g.Category || 'uncategorized';
-        // cover: manual override first, else highest order image
-        const manualCover = images.find(i => i.cover);
-        const coverUrl = g.cover || g.coverUrl || g.coverurl || g.Cover
-          || (manualCover ? manualCover.url : '')
-          || (images[0]?.url || '');
-        return {
-          name: pgTitleCase(rawName),
-          slug: pgSlug(rawName),
-          cover: coverUrl,
-          images
-        };
-      }).filter(g => g.images.length > 0);
-    pgRenderAlbums();
-    pgHandleHash();
-  } catch(e) {
-    grid.innerHTML = '<div class="pg-error">Gallery failed to load.</div>';
-  }
-}
-
-function pgNormalizeItem(item, gallery) {
-  if (typeof item === 'string') return { url: item, title:'', category: gallery.name||'', date:'', order:0, cover:false };
-  if (typeof item === 'object' && item) return {
-    url: item.url || item.URL || item.Img_url || item.img_url || item.imageUrl || item['Image URL'] || '',
-    title: item.title || item.Title || item['Img Title'] || item.img_title || '',
-    category: item.category || item.Category || gallery.name || '',
-    date: item.date || item.Date || '',
-    order: parseInt(item.order || item.Order || 0) || 0,
-    cover: !!(item.cover || item.Cover)
-  };
-  return { url:'', title:'', category:'', date:'', order:0, cover:false };
-}
-
 function pgFormatDate(d) {
   if (!d) return '';
   try {
@@ -281,39 +262,36 @@ function pgFormatDate(d) {
   } catch(e) { return d; }
 }
 
-function pgSetCaption(item) {
-  captionTitle.textContent = item.title || '';
-  captionMeta.textContent = [pgTitleCase(item.category), pgFormatDate(item.date)].filter(Boolean).join(' | ');
+function pgNormalizeItem(item, gallery) {
+  if (typeof item === 'string') return { url:item, title:'', category:gallery.name||'', date:'', order:0, cover:false };
+  return {
+    url: item.url||item.URL||item.Img_url||item.img_url||item['Image URL']||'',
+    title: item.title||item.Title||item['Img Title']||item.img_title||'',
+    category: item.category||item.Category||gallery.name||'',
+    date: item.date||item.Date||'',
+    order: parseInt(item.order||item.Order||0)||0,
+    cover: !!(item.cover||item.Cover)
+  };
 }
 
-function pgUpdatePinterest(item, slug) {
-  const pageUrl = encodeURIComponent(`${SITE_URL}/#/${slug}/${item.order}`);
-  const mediaUrl = encodeURIComponent(item.url);
-  const desc = encodeURIComponent([item.title, pgTitleCase(item.category)].filter(Boolean).join(' · '));
-  pinterestBtn.href = `https://pinterest.com/pin/create/button/?url=${pageUrl}&media=${mediaUrl}&description=${desc}`;
-}
-
-function pgSetHash(slug, order) {
-  history.replaceState(null, '', order !== undefined ? `#/${slug}/${order}` : `#/${slug}`);
-}
-
-function pgHandleHash() {
-  const hash = window.location.hash;
-  if (!hash || hash === '#') return;
-  const imgM = hash.match(/^\/#\/([^/]+)\/(\d+)$/);
-  if (imgM) {
-    const slug = imgM[1], order = parseInt(imgM[2]);
-    const ci = GALLERIES.findIndex(g => g.slug === slug);
-    if (ci >= 0) {
-      const ii = GALLERIES[ci].images.findIndex(img => img.order === order);
-      if (ii >= 0) { pgOpen(ci); pgSingleOpen(ii); return; }
-      pgOpen(ci); return;
-    }
-  }
-  const colM = hash.match(/^\/#\/([^/]+)$/);
-  if (colM) {
-    const ci = GALLERIES.findIndex(g => g.slug === colM[1]);
-    if (ci >= 0) pgOpen(ci);
+async function pgLoadData() {
+  try {
+    const res = await fetch(DATA_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed');
+    const data = await res.json();
+    GALLERIES = (Array.isArray(data) ? data : data.galleries || [])
+      .map(g => {
+        const images = (g.images||[]).map(i => pgNormalizeItem(i, g)).filter(i => i.url);
+        images.sort((a,b) => (b.order||0) - (a.order||0));
+        const rawName = g.name||g.category||'uncategorized';
+        const manualCover = images.find(i => i.cover);
+        const cover = g.cover||g.coverUrl||(manualCover ? manualCover.url : '')||(images[0]?.url||'');
+        return { name:pgTitleCase(rawName), slug:pgSlug(rawName), cover, images };
+      }).filter(g => g.images.length > 0);
+    pgRenderAlbums();
+    pgHandleHash();
+  } catch(e) {
+    grid.innerHTML = '<div class="pg-error">Gallery failed to load.</div>';
   }
 }
 
@@ -323,9 +301,9 @@ function pgRenderAlbums() {
   GALLERIES.forEach((g, i) => {
     const div = document.createElement('div'); div.className = 'pg-album';
     const img = document.createElement('img'); img.src = g.cover; img.alt = g.name; img.loading = 'lazy';
-    const label = document.createElement('div'); label.className = 'pg-album-label'; label.textContent = g.name;
-    const count = document.createElement('div'); count.className = 'pg-album-count'; count.textContent = g.images.length + ' Images';
-    label.appendChild(count); div.appendChild(img); div.appendChild(label);
+    const label = document.createElement('div'); label.className = 'pg-album-label';
+    label.innerHTML = g.name + '<div class="pg-album-count">'+g.images.length+' Images</div>';
+    div.appendChild(img); div.appendChild(label);
     div.onclick = () => pgOpen(i);
     grid.appendChild(div);
   });
@@ -348,15 +326,11 @@ function pgOpen(i) {
 function pgClose() {
   overlay.classList.remove('open'); single.classList.remove('open');
   document.body.style.overflow = '';
-  history.replaceState(null, '', window.location.pathname);
+  history.replaceState(null,'',window.location.pathname);
 }
 
-function pgBuildImgWrap(gallery) {
-  const closeBtn = imgWrap.querySelector('.pg-single-close');
-  const pinBtn = imgWrap.querySelector('.pg-pinterest-btn');
+function pgBuildImages(gallery) {
   imgWrap.innerHTML = '';
-  if (closeBtn) imgWrap.appendChild(closeBtn);
-  if (pinBtn) imgWrap.appendChild(pinBtn);
   gallery.images.forEach((item, j) => {
     const img = document.createElement('img');
     img.src = item.url; img.alt = item.title||gallery.name; img.loading = 'lazy';
@@ -365,13 +339,25 @@ function pgBuildImgWrap(gallery) {
   });
 }
 
+function pgSetCaption(item) {
+  captionTitle.textContent = item.title || '';
+  captionMeta.textContent = [pgTitleCase(item.category), pgFormatDate(item.date)].filter(Boolean).join(' | ');
+}
+
+function pgUpdatePinterest(item, slug) {
+  const pageUrl = encodeURIComponent(SITE_URL+'/#/'+slug+'/'+item.order);
+  const mediaUrl = encodeURIComponent(item.url);
+  const desc = encodeURIComponent([item.title, pgTitleCase(item.category)].filter(Boolean).join(' · '));
+  pinterestBtn.href = 'https://pinterest.com/pin/create/button/?url='+pageUrl+'&media='+mediaUrl+'&description='+desc;
+}
+
 function pgSingleOpen(j) {
   currentImg = j;
   const g = GALLERIES[currentGallery];
-  pgBuildImgWrap(g);
+  pgBuildImages(g);
   pgSetCaption(g.images[j]);
   pgUpdatePinterest(g.images[j], g.slug);
-  singleCounter.textContent = (j+1) + ' / ' + g.images.length;
+  singleCounter.textContent = (j+1)+' / '+g.images.length;
   single.classList.add('open');
   pgSetHash(g.slug, g.images[j].order);
 }
@@ -384,36 +370,57 @@ function pgSingleClose() {
 function pgNav(dir) {
   if (isTransitioning) return;
   const g = GALLERIES[currentGallery];
-  const allImgs = Array.from(imgWrap.querySelectorAll('img'));
+  const allImgs = imgWrap.querySelectorAll('img');
   allImgs[currentImg].classList.remove('active');
   currentImg = (currentImg + dir + g.images.length) % g.images.length;
   allImgs[currentImg].classList.add('active');
-  isTransitioning = true;
-  setTimeout(() => { isTransitioning = false; }, 300);
+  isTransitioning = true; setTimeout(()=>{ isTransitioning=false; },300);
   pgSetCaption(g.images[currentImg]);
   pgUpdatePinterest(g.images[currentImg], g.slug);
-  singleCounter.textContent = (currentImg+1) + ' / ' + g.images.length;
+  singleCounter.textContent = (currentImg+1)+' / '+g.images.length;
   pgSetHash(g.slug, g.images[currentImg].order);
 }
 
-function pgOverlayClick(e) { if (e.target === overlay) pgClose(); }
-function pgSingleClick(e) { if (e.target === single) pgSingleClose(); }
+function pgSetHash(slug, order) {
+  history.replaceState(null,'', order!==undefined ? '#/'+slug+'/'+order : '#/'+slug);
+}
 
-document.addEventListener('keydown', e => {
+function pgHandleHash() {
+  const hash = window.location.hash;
+  if (!hash || hash==='#') return;
+  const imgM = hash.match(/^\/#\/([^\/]+)\/(\d+)$/);
+  if (imgM) {
+    const ci = GALLERIES.findIndex(g=>g.slug===imgM[1]);
+    if (ci>=0) {
+      const ii = GALLERIES[ci].images.findIndex(img=>img.order===parseInt(imgM[2]));
+      pgOpen(ci); if (ii>=0) pgSingleOpen(ii); return;
+    }
+  }
+  const colM = hash.match(/^\/#\/([^\/]+)$/);
+  if (colM) { const ci=GALLERIES.findIndex(g=>g.slug===colM[1]); if(ci>=0) pgOpen(ci); }
+}
+
+// Click outside to close
+overlay.addEventListener('click', e=>{ if(e.target===overlay) pgClose(); });
+single.addEventListener('click', e=>{ if(e.target===single) pgSingleClose(); });
+
+// Keyboard
+document.addEventListener('keydown', e=>{
   const open = single.classList.contains('open');
-  if (e.key === 'Escape') { if (open) pgSingleClose(); else pgClose(); }
+  if (e.key==='Escape') { if(open) pgSingleClose(); else pgClose(); }
   if (!open) return;
-  if (e.key === 'ArrowRight') pgNav(1);
-  if (e.key === 'ArrowLeft') pgNav(-1);
+  if (e.key==='ArrowRight') pgNav(1);
+  if (e.key==='ArrowLeft') pgNav(-1);
 });
 
-let tx = 0;
-single.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive:true });
-single.addEventListener('touchend', e => {
+// Swipe
+let tx=0;
+single.addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; },{passive:true});
+single.addEventListener('touchend', e=>{
   if (!single.classList.contains('open')) return;
   const dx = e.changedTouches[0].clientX - tx;
-  if (Math.abs(dx) > 40) pgNav(dx < 0 ? 1 : -1);
-}, { passive:true });
+  if (Math.abs(dx)>40) pgNav(dx<0?1:-1);
+},{passive:true});
 
 pgLoadData();
 </script>
