@@ -1,3 +1,17 @@
 {
-  "galleries": []
+  "galleries": [
+    {
+      "name": "Tomato Girl",
+      "images": [
+        {
+          "order": 11,
+          "url": "https://pub-2193ba767eaa45ac995c94988ff1de97.r2.dev/1782755819.jpg",
+          "title": "Chic Oversized Outfit Aesthetic For a Stroll Through the City",
+          "category": "Tomato Girl",
+          "date": "2026-06-30",
+          "cover": false
+        }
+      ]
+    }
+  ]
 }
