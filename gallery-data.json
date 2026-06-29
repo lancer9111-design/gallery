@@ -28,6 +28,14 @@
           "cover": false
         }
       ]
+    },
+    {
+      "images": [
+        {
+          "order": null,
+          "cover": false
+        }
+      ]
     }
   ]
 }
