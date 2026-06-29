@@ -1,18 +1,6 @@
 {
   "galleries": [
-        {
-      "name": "streetwear",
-      "images": [
-        {
-          "order": 8,
-          "url": "https://your-r2-domain.com/streetwear/008.jpg",
-          "title": "Urban layer",
-          "category": "streetwear",
-          "date": "2026-06-29",
-          "cover": true
-        }
-      ]
-    },
+        
     {
       "name": "Tomato Girl",
       "images": [
