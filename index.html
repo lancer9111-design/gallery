@@ -61,10 +61,16 @@ html, body {
   display:flex; align-items:center; justify-content:space-between;
   padding:14px 20px; color:#fff; flex-shrink:0;
   border-bottom:1px solid rgba(255,255,255,.1);
+  min-height:56px;
 }
 .pg-topbar h2 { font-size:16px; font-weight:600; margin:0; }
-.pg-close { background:none; border:none; color:#fff; cursor:pointer; opacity:.7; padding:4px; display:flex; align-items:center; }
+.pg-close {
+  background:none; border:none; color:#fff; cursor:pointer;
+  opacity:.7; padding:6px; display:flex; align-items:center;
+  flex-shrink:0; margin-left:12px;
+}
 .pg-close:hover { opacity:1; }
+.pg-close svg { width:26px; height:26px; }
 .pg-inner-grid {
   flex:1; overflow-y:auto; padding:18px 20px 28px;
   display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
@@ -79,16 +85,18 @@ html, body {
 /* ── Single Image View ── */
 .pg-single {
   display:none; position:fixed; inset:0; z-index:10000;
-  background:rgba(0,0,0,.97); flex-direction:column;
-  overflow:hidden;
+  background:rgba(0,0,0,.97); flex-direction:column; overflow:hidden;
 }
 .pg-single.open { display:flex; }
 
-/* Close button — fixed top right, always above image */
+/* Top bar for single view */
+.pg-single-topbar {
+  display:flex; align-items:center; justify-content:flex-end;
+  padding:10px 16px; flex-shrink:0;
+}
 .pg-single-close {
-  position:absolute; top:12px; right:16px;
   background:none; border:none; color:#fff;
-  cursor:pointer; z-index:10; opacity:.75; padding:6px;
+  cursor:pointer; opacity:.75; padding:6px;
   display:flex; align-items:center;
 }
 .pg-single-close:hover { opacity:1; }
@@ -97,20 +105,18 @@ html, body {
 /* Image area */
 .pg-single-img-wrap {
   position:relative; display:flex; align-items:center; justify-content:center;
-  flex:1; min-height:0; padding:56px 12px 12px;
+  flex:1; min-height:0; overflow:hidden;
 }
 .pg-single-img-wrap img {
   max-width:100%; max-height:100%; border-radius:8px; object-fit:contain;
-  position:absolute; top:56px; left:50%; transform:translateX(-50%);
-  bottom:12px; width:auto; height:auto;
-  max-width:calc(100% - 24px); max-height:calc(100% - 68px);
+  position:absolute;
   transition:opacity 0.25s ease; opacity:0; pointer-events:none;
 }
 .pg-single-img-wrap img.active { opacity:1; pointer-events:auto; }
 
-/* Pinterest button — bottom right of image wrap */
+/* Pinterest button */
 .pg-pinterest-btn {
-  position:absolute; bottom:20px; right:20px; z-index:5;
+  position:absolute; bottom:14px; right:14px; z-index:5;
   display:flex; align-items:center; justify-content:center;
   background:#E60023; border:none; color:#fff;
   width:42px; height:42px; border-radius:50%;
@@ -149,12 +155,12 @@ html, body {
   .pg-site-title { padding:28px 14px 6px; }
   .pg-wrap { padding:18px 14px; }
   .pg-album { border-radius:10px; }
-  .pg-topbar { padding:14px 18px; }
-  .pg-inner-grid { padding:14px 14px 24px; gap:10px; }
+  .pg-topbar { padding:12px 14px; }
+  .pg-inner-grid { padding:12px 12px 24px; gap:10px; }
   .pg-nav-btn { width:clamp(48px,13vw,60px); height:clamp(48px,13vw,60px); }
   .pg-nav-btn svg { width:clamp(26px,7vw,32px); height:clamp(26px,7vw,32px); }
   .pg-single-nav { gap:clamp(20px,8vw,36px); }
-  .pg-pinterest-btn { width:38px; height:38px; bottom:14px; right:14px; }
+  .pg-pinterest-btn { width:38px; height:38px; }
   .pg-footer { padding:0 14px 40px; }
   .pg-footer-inner { justify-content:center; flex-direction:column; align-items:center; text-align:center; gap:12px; }
 }
@@ -190,7 +196,7 @@ html, body {
 <div class="pg-overlay" id="pg-overlay">
   <div class="pg-topbar">
     <h2 id="pg-title"></h2>
-    <button class="pg-close" onclick="pgClose()" aria-label="Close">
+    <button class="pg-close" id="pg-close-btn" aria-label="Close collection">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
       </svg>
@@ -201,21 +207,21 @@ html, body {
 
 <!-- Single Image View -->
 <div class="pg-single" id="pg-single">
-  <button class="pg-single-close" onclick="pgSingleClose()" aria-label="Close">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-    </svg>
-  </button>
-
-  <div class="pg-single-img-wrap" id="pg-img-wrap">
-    <!-- images injected here -->
+  <div class="pg-single-topbar">
+    <button class="pg-single-close" id="pg-single-close-btn" aria-label="Close image">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
   </div>
 
-  <a id="pg-pinterest-btn" class="pg-pinterest-btn" href="#" target="_blank" rel="noopener noreferrer" aria-label="Save to Pinterest">
-    <svg viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
-    </svg>
-  </a>
+  <div class="pg-single-img-wrap" id="pg-img-wrap">
+    <a id="pg-pinterest-btn" class="pg-pinterest-btn" href="#" target="_blank" rel="noopener noreferrer" aria-label="Save to Pinterest">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
+      </svg>
+    </a>
+  </div>
 
   <div class="pg-caption-wrap">
     <div class="pg-caption-title" id="pg-caption-title"></div>
@@ -223,11 +229,11 @@ html, body {
   </div>
 
   <div class="pg-single-nav">
-    <button class="pg-nav-btn" onclick="pgNav(-1)" aria-label="Previous">
+    <button class="pg-nav-btn" id="pg-prev-btn" aria-label="Previous">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <span class="pg-single-counter" id="pg-single-counter"></span>
-    <button class="pg-nav-btn" onclick="pgNav(1)" aria-label="Next">
+    <button class="pg-nav-btn" id="pg-next-btn" aria-label="Next">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
   </div>
@@ -242,30 +248,34 @@ const grid = document.getElementById('pg-grid');
 const overlay = document.getElementById('pg-overlay');
 const single = document.getElementById('pg-single');
 const imgWrap = document.getElementById('pg-img-wrap');
+const pinterestBtn = document.getElementById('pg-pinterest-btn');
 const captionTitle = document.getElementById('pg-caption-title');
 const captionMeta = document.getElementById('pg-caption-meta');
 const singleCounter = document.getElementById('pg-single-counter');
-const pinterestBtn = document.getElementById('pg-pinterest-btn');
+
+// Button events
+document.getElementById('pg-close-btn').onclick = pgClose;
+document.getElementById('pg-single-close-btn').onclick = pgSingleClose;
+document.getElementById('pg-prev-btn').onclick = () => pgNav(-1);
+document.getElementById('pg-next-btn').onclick = () => pgNav(1);
 
 function pgSlug(str) {
-  return (str || '').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  return (str||'').toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
 }
 function pgTitleCase(str) {
-  return (str || '').replace(/\b\w/g, c => c.toUpperCase());
+  return (str||'').replace(/\w/g, c=>c.toUpperCase());
 }
 function pgFormatDate(d) {
   if (!d) return '';
   try {
-    const dt = new Date(d);
-    if (isNaN(dt)) return d;
+    const dt = new Date(d); if (isNaN(dt)) return d;
     return String(dt.getDate()).padStart(2,'0')+'.'+String(dt.getMonth()+1).padStart(2,'0')+'.'+dt.getFullYear();
   } catch(e) { return d; }
 }
-
 function pgNormalizeItem(item, gallery) {
-  if (typeof item === 'string') return { url:item, title:'', category:gallery.name||'', date:'', order:0, cover:false };
+  if (typeof item==='string') return {url:item,title:'',category:gallery.name||'',date:'',order:0,cover:false};
   return {
-    url: item.url||item.URL||item.Img_url||item.img_url||item['Image URL']||'',
+    url: item.url||item.URL||item.Img_url||item['Image URL']||'',
     title: item.title||item.Title||item['Img Title']||item.img_title||'',
     category: item.category||item.Category||gallery.name||'',
     date: item.date||item.Date||'',
@@ -276,90 +286,90 @@ function pgNormalizeItem(item, gallery) {
 
 async function pgLoadData() {
   try {
-    const res = await fetch(DATA_URL, { cache: 'no-store' });
+    const res = await fetch(DATA_URL, {cache:'no-store'});
     if (!res.ok) throw new Error('Failed');
     const data = await res.json();
-    GALLERIES = (Array.isArray(data) ? data : data.galleries || [])
-      .map(g => {
-        const images = (g.images||[]).map(i => pgNormalizeItem(i, g)).filter(i => i.url);
-        images.sort((a,b) => (b.order||0) - (a.order||0));
-        const rawName = g.name||g.category||'uncategorized';
-        const manualCover = images.find(i => i.cover);
-        const cover = g.cover||g.coverUrl||(manualCover ? manualCover.url : '')||(images[0]?.url||'');
-        return { name:pgTitleCase(rawName), slug:pgSlug(rawName), cover, images };
-      }).filter(g => g.images.length > 0);
+    GALLERIES = (Array.isArray(data)?data:data.galleries||[]).map(g=>{
+      const images=(g.images||[]).map(i=>pgNormalizeItem(i,g)).filter(i=>i.url);
+      images.sort((a,b)=>(b.order||0)-(a.order||0));
+      const rawName=g.name||g.category||'uncategorized';
+      const manualCover=images.find(i=>i.cover);
+      const cover=g.cover||g.coverUrl||(manualCover?manualCover.url:'')||(images[0]?.url||'');
+      return {name:pgTitleCase(rawName),slug:pgSlug(rawName),cover,images};
+    }).filter(g=>g.images.length>0);
     pgRenderAlbums();
     pgHandleHash();
   } catch(e) {
-    grid.innerHTML = '<div class="pg-error">Gallery failed to load.</div>';
+    grid.innerHTML='<div class="pg-error">Gallery failed to load.</div>';
   }
 }
 
 function pgRenderAlbums() {
-  grid.innerHTML = '';
-  if (!GALLERIES.length) { grid.innerHTML = '<div class="pg-error">No gallery items found.</div>'; return; }
-  GALLERIES.forEach((g, i) => {
-    const div = document.createElement('div'); div.className = 'pg-album';
-    const img = document.createElement('img'); img.src = g.cover; img.alt = g.name; img.loading = 'lazy';
-    const label = document.createElement('div'); label.className = 'pg-album-label';
-    label.innerHTML = g.name + '<div class="pg-album-count">'+g.images.length+' Images</div>';
+  grid.innerHTML='';
+  if (!GALLERIES.length){grid.innerHTML='<div class="pg-error">No gallery items found.</div>';return;}
+  GALLERIES.forEach((g,i)=>{
+    const div=document.createElement('div'); div.className='pg-album';
+    const img=document.createElement('img'); img.src=g.cover; img.alt=g.name; img.loading='lazy';
+    const label=document.createElement('div'); label.className='pg-album-label';
+    label.innerHTML=g.name+'<div class="pg-album-count">'+g.images.length+' Images</div>';
     div.appendChild(img); div.appendChild(label);
-    div.onclick = () => pgOpen(i);
+    div.onclick=()=>pgOpen(i);
     grid.appendChild(div);
   });
 }
 
 function pgOpen(i) {
-  currentGallery = i;
-  const g = GALLERIES[i];
-  document.getElementById('pg-title').textContent = g.name;
-  const inner = document.getElementById('pg-inner-grid'); inner.innerHTML = '';
-  g.images.forEach((item, j) => {
-    const d = document.createElement('div'); d.className = 'pg-thumb';
-    const img = document.createElement('img'); img.src = item.url; img.alt = item.title||g.name; img.loading = 'lazy';
-    d.appendChild(img); d.onclick = () => pgSingleOpen(j); inner.appendChild(d);
+  currentGallery=i;
+  const g=GALLERIES[i];
+  document.getElementById('pg-title').textContent=g.name;
+  const inner=document.getElementById('pg-inner-grid'); inner.innerHTML='';
+  g.images.forEach((item,j)=>{
+    const d=document.createElement('div'); d.className='pg-thumb';
+    const img=document.createElement('img'); img.src=item.url; img.alt=item.title||g.name; img.loading='lazy';
+    d.appendChild(img); d.onclick=()=>pgSingleOpen(j); inner.appendChild(d);
   });
-  overlay.classList.add('open'); document.body.style.overflow = 'hidden';
+  overlay.classList.add('open'); document.body.style.overflow='hidden';
   pgSetHash(g.slug);
 }
 
 function pgClose() {
   overlay.classList.remove('open'); single.classList.remove('open');
-  document.body.style.overflow = '';
+  document.body.style.overflow='';
   history.replaceState(null,'',window.location.pathname);
 }
 
 function pgBuildImages(gallery) {
-  imgWrap.innerHTML = '';
-  gallery.images.forEach((item, j) => {
-    const img = document.createElement('img');
-    img.src = item.url; img.alt = item.title||gallery.name; img.loading = 'lazy';
-    if (j === currentImg) img.classList.add('active');
-    imgWrap.appendChild(img);
+  // Remove old images only, keep pinterest btn
+  Array.from(imgWrap.querySelectorAll('img')).forEach(el=>el.remove());
+  gallery.images.forEach((item,j)=>{
+    const img=document.createElement('img');
+    img.src=item.url; img.alt=item.title||gallery.name; img.loading='lazy';
+    if (j===currentImg) img.classList.add('active');
+    imgWrap.insertBefore(img, pinterestBtn);
   });
 }
 
 function pgSetCaption(item) {
-  captionTitle.textContent = item.title || '';
-  captionMeta.textContent = [pgTitleCase(item.category), pgFormatDate(item.date)].filter(Boolean).join(' | ');
+  captionTitle.textContent=item.title||'';
+  captionMeta.textContent=[pgTitleCase(item.category),pgFormatDate(item.date)].filter(Boolean).join(' | ');
 }
 
-function pgUpdatePinterest(item, slug) {
-  const pageUrl = encodeURIComponent(SITE_URL+'/#/'+slug+'/'+item.order);
-  const mediaUrl = encodeURIComponent(item.url);
-  const desc = encodeURIComponent([item.title, pgTitleCase(item.category)].filter(Boolean).join(' · '));
-  pinterestBtn.href = 'https://pinterest.com/pin/create/button/?url='+pageUrl+'&media='+mediaUrl+'&description='+desc;
+function pgUpdatePinterest(item,slug) {
+  const pageUrl=encodeURIComponent(SITE_URL+'/#/'+slug+'/'+item.order);
+  const mediaUrl=encodeURIComponent(item.url);
+  const desc=encodeURIComponent([item.title,pgTitleCase(item.category)].filter(Boolean).join(' · '));
+  pinterestBtn.href='https://pinterest.com/pin/create/button/?url='+pageUrl+'&media='+mediaUrl+'&description='+desc;
 }
 
 function pgSingleOpen(j) {
-  currentImg = j;
-  const g = GALLERIES[currentGallery];
+  currentImg=j;
+  const g=GALLERIES[currentGallery];
   pgBuildImages(g);
   pgSetCaption(g.images[j]);
-  pgUpdatePinterest(g.images[j], g.slug);
-  singleCounter.textContent = (j+1)+' / '+g.images.length;
+  pgUpdatePinterest(g.images[j],g.slug);
+  singleCounter.textContent=(j+1)+' / '+g.images.length;
   single.classList.add('open');
-  pgSetHash(g.slug, g.images[j].order);
+  pgSetHash(g.slug,g.images[j].order);
 }
 
 function pgSingleClose() {
@@ -369,56 +379,50 @@ function pgSingleClose() {
 
 function pgNav(dir) {
   if (isTransitioning) return;
-  const g = GALLERIES[currentGallery];
-  const allImgs = imgWrap.querySelectorAll('img');
+  const g=GALLERIES[currentGallery];
+  const allImgs=imgWrap.querySelectorAll('img');
   allImgs[currentImg].classList.remove('active');
-  currentImg = (currentImg + dir + g.images.length) % g.images.length;
+  currentImg=(currentImg+dir+g.images.length)%g.images.length;
   allImgs[currentImg].classList.add('active');
-  isTransitioning = true; setTimeout(()=>{ isTransitioning=false; },300);
+  isTransitioning=true; setTimeout(()=>{isTransitioning=false;},300);
   pgSetCaption(g.images[currentImg]);
-  pgUpdatePinterest(g.images[currentImg], g.slug);
-  singleCounter.textContent = (currentImg+1)+' / '+g.images.length;
-  pgSetHash(g.slug, g.images[currentImg].order);
+  pgUpdatePinterest(g.images[currentImg],g.slug);
+  singleCounter.textContent=(currentImg+1)+' / '+g.images.length;
+  pgSetHash(g.slug,g.images[currentImg].order);
 }
 
-function pgSetHash(slug, order) {
-  history.replaceState(null,'', order!==undefined ? '#/'+slug+'/'+order : '#/'+slug);
+function pgSetHash(slug,order) {
+  history.replaceState(null,'',order!==undefined?'#/'+slug+'/'+order:'#/'+slug);
 }
 
 function pgHandleHash() {
-  const hash = window.location.hash;
-  if (!hash || hash==='#') return;
-  const imgM = hash.match(/^\/#\/([^\/]+)\/(\d+)$/);
+  const hash=window.location.hash;
+  if (!hash||hash==='#') return;
+  const imgM=hash.match(/^\/#\/([^\/]+)\/(\d+)$/);
   if (imgM) {
-    const ci = GALLERIES.findIndex(g=>g.slug===imgM[1]);
-    if (ci>=0) {
-      const ii = GALLERIES[ci].images.findIndex(img=>img.order===parseInt(imgM[2]));
-      pgOpen(ci); if (ii>=0) pgSingleOpen(ii); return;
-    }
+    const ci=GALLERIES.findIndex(g=>g.slug===imgM[1]);
+    if (ci>=0){const ii=GALLERIES[ci].images.findIndex(img=>img.order===parseInt(imgM[2]));pgOpen(ci);if(ii>=0)pgSingleOpen(ii);return;}
   }
-  const colM = hash.match(/^\/#\/([^\/]+)$/);
-  if (colM) { const ci=GALLERIES.findIndex(g=>g.slug===colM[1]); if(ci>=0) pgOpen(ci); }
+  const colM=hash.match(/^\/#\/([^\/]+)$/);
+  if (colM){const ci=GALLERIES.findIndex(g=>g.slug===colM[1]);if(ci>=0)pgOpen(ci);}
 }
 
-// Click outside to close
-overlay.addEventListener('click', e=>{ if(e.target===overlay) pgClose(); });
-single.addEventListener('click', e=>{ if(e.target===single) pgSingleClose(); });
+overlay.addEventListener('click',e=>{if(e.target===overlay)pgClose();});
+single.addEventListener('click',e=>{if(e.target===single)pgSingleClose();});
 
-// Keyboard
-document.addEventListener('keydown', e=>{
-  const open = single.classList.contains('open');
-  if (e.key==='Escape') { if(open) pgSingleClose(); else pgClose(); }
+document.addEventListener('keydown',e=>{
+  const open=single.classList.contains('open');
+  if (e.key==='Escape'){if(open)pgSingleClose();else pgClose();}
   if (!open) return;
   if (e.key==='ArrowRight') pgNav(1);
   if (e.key==='ArrowLeft') pgNav(-1);
 });
 
-// Swipe
 let tx=0;
-single.addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; },{passive:true});
-single.addEventListener('touchend', e=>{
+single.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+single.addEventListener('touchend',e=>{
   if (!single.classList.contains('open')) return;
-  const dx = e.changedTouches[0].clientX - tx;
+  const dx=e.changedTouches[0].clientX-tx;
   if (Math.abs(dx)>40) pgNav(dx<0?1:-1);
 },{passive:true});
 
