@@ -1,18 +1,38 @@
-[
-  {
-    "name": "Collection 01",
-    "cover": "https://v3b.fal.media/files/b/0a9ffd8a/2p8pGwmVeotGkWCP2nXwv_FUTHnBTN.png",
-    "images": [
-      {
-        "url": "https://v3b.fal.media/files/b/0a9ffd8a/2p8pGwmVeotGkWCP2nXwv_FUTHnBTN.png",
-        "category": "Streetwear",
-        "title": "Men's Heavyweight Tshirt Outfits"
-      },
-      {
-        "url": "https://v3b.fal.media/files/b/0a9ffd9a/-POHCqKyMkHG9a3OwsXES_gXl1lXK4.png",
-        "category": "Streetwear",
-        "title": "Women's Heavyweight Hoodie Outfits"
-      }
-    ]
-  }
-]
+{
+  "galleries": [
+    {
+      "name": "tomato girl",
+      "images": [
+        {
+          "order": 5,
+          "url": "https://your-r2-domain.com/tomato-girl/005.jpg",
+          "title": "Summer afternoon",
+          "category": "tomato girl",
+          "date": "2026-06-29",
+          "cover": true
+        },
+        {
+          "order": 4,
+          "url": "https://your-r2-domain.com/tomato-girl/004.jpg",
+          "title": "Red dress series",
+          "category": "tomato girl",
+          "date": "2026-06-28",
+          "cover": false
+        }
+      ]
+    },
+    {
+      "name": "streetwear",
+      "images": [
+        {
+          "order": 8,
+          "url": "https://your-r2-domain.com/streetwear/008.jpg",
+          "title": "Urban layer",
+          "category": "streetwear",
+          "date": "2026-06-29",
+          "cover": true
+        }
+      ]
+    }
+  ]
+}
