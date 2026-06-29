@@ -1,386 +1,173 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Visual Core LOOKBOOK</title>
-
+<title>Visual Core Lookbook</title>
 <style>
-  * {
-    box-sizing: border-box;
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    background: #0f0f0f;
-  }
+html, body {
+  background: #0f0f0f;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
 
-  .pg-wrap {
-    font-family: inherit;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 24px 16px;
-  }
+/* ── Site Header ── */
+.pg-site-title {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px 12px;
+}
+.pg-site-title h1 {
+  font-size: clamp(30px, 5vw, 56px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 700;
+}
+.pg-site-title p {
+  margin: 10px 0 0;
+  max-width: 560px;
+  color: rgba(255,255,255,.55);
+  font-size: 15px;
+  line-height: 1.6;
+}
 
-  .pg-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
-  }
+/* ── Collection Grid ── */
+.pg-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
 
-  .pg-album {
-    position: relative;
-    cursor: pointer;
-    border-radius: 12px;
-    overflow: hidden;
-    aspect-ratio: 3 / 4;
-    background: #111;
-    transition: transform .2s, box-shadow .2s;
-  }
+.pg-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
 
-  .pg-album:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0,0,0,.35);
-  }
+/* PC: 3 cols | Tablet: 2 cols | Mobile: 2 cols */
+@media (max-width: 800px) {
+  .pg-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+}
 
-  .pg-album img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
+.pg-album {
+  position: relative;
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  background: #111;
+  transition: transform .2s, box-shadow .2s;
+}
+.pg-album:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+.pg-album img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.pg-album-label {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,.72));
+  color: #fff;
+  padding: 36px 14px 14px;
+  font-size: 15px; font-weight: 600;
+}
+.pg-album-count { font-size: 12px; font-weight: 400; opacity: .75; margin-top: 3px; }
 
-  .pg-album-label {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(transparent, rgba(0,0,0,.7));
-    color: #fff;
-    padding: 36px 14px 14px;
-    font-size: 15px;
-    font-weight: 600;
-  }
+.pg-loading, .pg-error {
+  color: rgba(255,255,255,.7);
+  background: #111;
+  border-radius: 12px;
+  padding: 28px 18px;
+  text-align: center;
+  font-size: 14px;
+}
 
-  .pg-album-count {
-    font-size: 12px;
-    font-weight: 400;
-    opacity: .8;
-    margin-top: 3px;
-  }
+/* ── Collection Overlay ── */
+.pg-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,.94);
+  flex-direction: column;
+}
+.pg-overlay.open { display: flex; }
 
-  .pg-loading,
-  .pg-error {
-    color: rgba(255,255,255,.75);
-    background: #111;
-    border-radius: 12px;
-    padding: 28px 18px;
-    text-align: center;
-    font-size: 14px;
-  }
+.pg-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px;
+  color: #fff; flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.pg-topbar h2 { font-size: 16px; font-weight: 600; margin: 0; }
+.pg-close {
+  background: none; border: none; color: #fff;
+  cursor: pointer; opacity: .7; padding: 4px;
+  display: flex; align-items: center; justify-content: center;
+}
+.pg-close:hover { opacity: 1; }
 
-  .pg-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: rgba(0,0,0,.94);
-    flex-direction: column;
-  }
+.pg-inner-grid {
+  flex: 1; overflow-y: auto;
+  padding: 18px 20px 28px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-content: start;
+}
+@media (min-width: 600px) { .pg-inner-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; } }
+@media (min-width: 900px) { .pg-inner-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; } }
 
-  .pg-overlay.open {
-    display: flex;
-  }
+.pg-thumb {
+  width: 100%; aspect-ratio: 3/4;
+  border-radius: 10px; overflow: hidden;
+  cursor: zoom-in; background: #111;
+}
+.pg-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: opacity .15s;
+}
+.pg-thumb:hover img { opacity: .85; }
 
-  .pg-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    color: #fff;
-    flex-shrink: 0;
-    border-bottom: 1px solid rgba(255,255,255,.1);
-  }
-
-  .pg-topbar h2 {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 0;
-  }
-
-  .pg-close {
-    background: none;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    opacity: .72;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .pg-close:hover {
-    opacity: 1;
-  }
-
-  .pg-inner-grid {
-    flex: 1;
-    overflow-y: auto;
-    padding: 18px 20px 28px;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    align-content: start;
-  }
-
-  .pg-thumb {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    border-radius: 10px;
-    overflow: hidden;
-    cursor: zoom-in;
-    background: #111;
-  }
-
-  .pg-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: opacity .15s;
-  }
-
-  .pg-thumb:hover img {
-    opacity: .85;
-  }
-
-  @media (min-width: 600px) {
-    .pg-inner-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-  }
-
-  @media (min-width: 900px) {
-    .pg-inner-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-    }
-  }
-
-  .pg-single {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    background: rgba(0,0,0,.97);
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 18px 14px 28px;
-  }
-
-  .pg-single.open {
-    display: flex;
-  }
-
-  .pg-single img {
-    max-width: 90vw;
-    max-height: 76vh;
-    border-radius: 8px;
-    object-fit: contain;
-  }
-
-  #pg-single-caption {
-    color: rgba(255,255,255,.92);
-    font-size: 16px;
-    line-height: 1.3;
-    font-weight: 500;
-    margin-top: 14px;
-    letter-spacing: .01em;
-    text-align: center;
-    padding: 0 16px;
-    max-width: 94vw;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .pg-single-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 34px;
-    margin-top: 18px;
-    color: #fff;
-  }
-
-  .pg-nav-btn {
-    background: rgba(255,255,255,.18);
-    border: none;
-    color: #fff;
-    width: 68px;
-    height: 68px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background .15s, transform .15s;
-  }
-
-  .pg-nav-btn:hover {
-    background: rgba(255,255,255,.3);
-  }
-
-  .pg-nav-btn:active {
-    transform: scale(.96);
-  }
-
-  .pg-nav-btn svg {
-    width: 40px;
-    height: 40px;
-  }
-
-  .pg-single-counter {
-    font-size: 14px;
-    color: rgba(255,255,255,.65);
-    min-width: 56px;
-    text-align: center;
-  }
-
-  .pg-single-close {
-    position: fixed;
-    top: 16px;
-    right: 20px;
-    background: none;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    z-index: 10001;
-    opacity: .75;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .pg-single-close:hover {
-    opacity: 1;
-  }
-
-  @media (max-width: 600px) {
-    .pg-wrap {
-      padding: 18px 14px;
-    }
-
-    .pg-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .pg-album {
-      border-radius: 10px;
-    }
-
-    .pg-album-label {
-      font-size: 14px;
-      padding: 32px 12px 12px;
-    }
-
-    .pg-overlay {
-      background: rgba(0,0,0,.94);
-    }
-
-    .pg-topbar {
-      padding: 14px 18px;
-    }
-
-    .pg-topbar h2 {
-      font-size: 16px;
-    }
-
-    .pg-inner-grid {
-      padding: 18px 18px 32px;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .pg-thumb {
-      aspect-ratio: 3 / 4;
-      border-radius: 10px;
-    }
-
-    .pg-single {
-      padding: 14px 10px 26px;
-    }
-
-    .pg-single img {
-      max-width: 92vw;
-      max-height: 70vh;
-      border-radius: 8px;
-    }
-
-    #pg-single-caption {
-      font-size: clamp(16px, 4.2vw, 19px);
-      margin-top: 16px;
-      max-width: 94vw;
-    }
-
-    .pg-single-nav {
-      gap: clamp(36px, 10vw, 56px);
-      margin-top: 20px;
-    }
-
-    .pg-nav-btn {
-      width: clamp(78px, 20vw, 96px);
-      height: clamp(78px, 20vw, 96px);
-      background: rgba(255,255,255,.2);
-    }
-
-    .pg-nav-btn svg {
-      width: clamp(44px, 11vw, 54px);
-      height: clamp(44px, 11vw, 54px);
-      stroke-width: 3;
-    }
-
-    .pg-single-counter {
-      font-size: 15px;
-      min-width: 58px;
-    }
-  }
-
-  @media (min-width: 640px) and (max-width: 899px) {
-    .pg-inner-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-/* =========================================================
-   FINAL UI FIX
-   1. PC 端恢复 Category | Title
-   2. 移动端关闭叉叉自适应变小
-   不影响 gallery-data.json 动态数据
-   ========================================================= */
-
-/* PC / 全端：确保单图标题永远显示 */
+/* ── Single Image Lightbox ── */
 .pg-single {
+  display: none;
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(0,0,0,.97);
+  align-items: center; justify-content: center;
+  flex-direction: column;
+  padding: 18px 14px 28px;
   overflow: hidden;
 }
+.pg-single.open { display: flex; }
 
-.pg-single img {
+/* Image with fade transition */
+.pg-single-img-wrap {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; flex: 1;
+  min-height: 0;
+}
+.pg-single-img-wrap img {
   max-width: 90vw;
   max-height: calc(100vh - 190px);
+  border-radius: 8px;
+  object-fit: contain;
+  position: absolute;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+.pg-single-img-wrap img.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-#pg-single-caption {
+.pg-single-caption {
   display: block;
-  visibility: visible;
-  opacity: 1;
-  color: rgba(255,255,255,.92);
+  color: rgba(255,255,255,.9);
   font-size: clamp(15px, 1.1vw, 18px);
   line-height: 1.35;
   font-weight: 500;
@@ -393,149 +180,101 @@
   text-overflow: ellipsis;
 }
 
-/* PC 端导航保持适中 */
+.pg-single-nav {
+  display: flex; align-items: center; justify-content: center;
+  gap: 34px; margin-top: 18px; color: #fff;
+}
 .pg-nav-btn {
-  width: 58px;
-  height: 58px;
+  background: rgba(255,255,255,.18); border: none; color: #fff;
+  width: 58px; height: 58px; border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, transform .15s;
+}
+.pg-nav-btn:hover { background: rgba(255,255,255,.3); }
+.pg-nav-btn:active { transform: scale(.96); }
+.pg-nav-btn svg { width: 34px; height: 34px; }
+.pg-single-counter {
+  font-size: 14px; color: rgba(255,255,255,.6);
+  min-width: 56px; text-align: center;
 }
 
-.pg-nav-btn svg {
-  width: 34px;
-  height: 34px;
+.pg-single-close {
+  position: fixed; top: 16px; right: 20px;
+  background: none; border: none; color: #fff;
+  cursor: pointer; z-index: 10001;
+  opacity: .75; padding: 4px;
+  display: flex; align-items: center; justify-content: center;
 }
+.pg-single-close:hover { opacity: 1; }
+.pg-single-close svg, .pg-close svg { width: 26px; height: 26px; }
 
-/* 关闭按钮：PC 端适中 */
-.pg-single-close svg,
-.pg-close svg {
-  width: 26px;
-  height: 26px;
-}
-
-/* 移动端：关闭叉叉自适应变小 */
+/* ── Mobile overrides ── */
 @media (max-width: 600px) {
-  .pg-single-close {
-    top: 14px;
-    right: 16px;
-    padding: 4px;
-  }
-
-  .pg-single-close svg,
-  .pg-close svg {
-    width: clamp(20px, 5.4vw, 26px);
-    height: clamp(20px, 5.4vw, 26px);
-    stroke-width: 2;
-  }
-
-  .pg-single img {
-    max-width: 92vw;
-    max-height: calc(100vh - 210px);
-  }
-
-  #pg-single-caption {
-    font-size: clamp(15px, 3.8vw, 18px);
-    margin-top: 14px;
-    max-width: 94vw;
-  }
-
-  .pg-nav-btn {
-    width: clamp(70px, 18vw, 88px);
-    height: clamp(70px, 18vw, 88px);
-  }
-
-  .pg-nav-btn svg {
-    width: clamp(38px, 9.5vw, 48px);
-    height: clamp(38px, 9.5vw, 48px);
-  }
+  .pg-site-title { padding: 28px 14px 6px; }
+  .pg-wrap { padding: 18px 14px; }
+  .pg-album { border-radius: 10px; }
+  .pg-album-label { font-size: 14px; padding: 32px 12px 12px; }
+  .pg-topbar { padding: 14px 18px; }
+  .pg-topbar h2 { font-size: 15px; }
+  .pg-inner-grid { padding: 14px 14px 24px; gap: 10px; }
+  .pg-single { padding: 14px 10px 26px; }
+  .pg-single-img-wrap img { max-width: 92vw; max-height: calc(100vh - 210px); }
+  .pg-single-caption { font-size: clamp(14px, 4vw, 17px); margin-top: 12px; }
+  .pg-single-nav { gap: clamp(28px, 8vw, 44px); margin-top: 16px; }
+  .pg-nav-btn { width: clamp(64px, 17vw, 80px); height: clamp(64px, 17vw, 80px); }
+  .pg-nav-btn svg { width: clamp(36px, 9vw, 44px); height: clamp(36px, 9vw, 44px); }
+  .pg-single-close { top: 14px; right: 16px; }
+  .pg-single-close svg, .pg-close svg { width: clamp(20px, 5.4vw, 26px); height: clamp(20px, 5.4vw, 26px); }
 }
-
-.pg-site-title {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 34px 16px 8px;
-  color: #fff;
+@media (min-width: 640px) and (max-width: 899px) {
+  .pg-inner-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-
-.pg-site-title h1 {
-  margin: 0;
-  font-size: clamp(30px, 5vw, 56px);
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-weight: 700;
-}
-
-.pg-site-title p {
-  margin: 12px 0 0;
-  max-width: 620px;
-  color: rgba(255,255,255,.62);
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-@media (max-width: 600px) {
-  .pg-site-title {
-    padding: 28px 14px 6px;
-  }
-
-  .pg-site-title h1 {
-    font-size: 34px;
-  }
-
-  .pg-site-title p {
-    font-size: 14px;
-  }
-}
-
- 
 </style>
 </head>
-
 <body>
+
 <section class="pg-site-title">
   <h1>Visual Core Gallery</h1>
-  
+  <p>A curated archive of AI-generated lookbooks and style collections, updated daily from our creative workflow.</p>
 </section>
+
 <div class="pg-wrap">
   <div class="pg-grid" id="pg-grid">
     <div class="pg-loading">Loading gallery...</div>
   </div>
 </div>
 
+<!-- Collection overlay -->
 <div class="pg-overlay" id="pg-overlay" onclick="pgOverlayClick(event)">
   <div class="pg-topbar">
     <h2 id="pg-title"></h2>
-    <button class="pg-close" onclick="pgClose()" aria-label="关闭">
+    <button class="pg-close" onclick="pgClose()" aria-label="Close">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-        <line x1="18" y1="6" x2="6" y2="18"/>
-        <line x1="6" y1="6" x2="18" y2="18"/>
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
       </svg>
     </button>
   </div>
-
   <div class="pg-inner-grid" id="pg-inner-grid"></div>
 </div>
 
+<!-- Single image lightbox -->
 <div class="pg-single" id="pg-single" onclick="pgSingleClick(event)">
-  <button class="pg-single-close" onclick="pgSingleClose()" aria-label="关闭">
+  <button class="pg-single-close" onclick="pgSingleClose()" aria-label="Close">
     <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-      <line x1="18" y1="6" x2="6" y2="18"/>
-      <line x1="6" y1="6" x2="18" y2="18"/>
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
     </svg>
   </button>
-
-  <img id="pg-single-img" src="" alt="">
-
-  <div id="pg-single-caption"></div>
-
+  <div class="pg-single-img-wrap" id="pg-img-wrap"></div>
+  <div id="pg-single-caption" class="pg-single-caption"></div>
   <div class="pg-single-nav">
-    <button class="pg-nav-btn" onclick="pgNav(-1)" aria-label="上一张">
+    <button class="pg-nav-btn" onclick="pgNav(-1)" aria-label="Previous">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
     </button>
-
     <span class="pg-single-counter" id="pg-single-counter"></span>
-
-    <button class="pg-nav-btn" onclick="pgNav(1)" aria-label="下一张">
+    <button class="pg-nav-btn" onclick="pgNav(1)" aria-label="Next">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="9 18 15 12 9 6"/>
       </svg>
@@ -544,121 +283,75 @@
 </div>
 
 <script>
-/*
-  Data source:
-  Make 从 Airtable 拉取 url / category / title 后，生成 gallery-data.json 并提交到 GitHub。
-  页面只读取 gallery-data.json，不把图片信息写死在 HTML 里。
-*/
-const DATA_URL = "./gallery-data.json";
-
+const DATA_URL = './gallery-data.json';
 let GALLERIES = [];
 let currentGallery = 0;
 let currentImg = 0;
+let isTransitioning = false;
 
-const grid = document.getElementById("pg-grid");
-const overlay = document.getElementById("pg-overlay");
-const single = document.getElementById("pg-single");
-const singleImg = document.getElementById("pg-single-img");
-const singleCaption = document.getElementById("pg-single-caption");
-const singleCounter = document.getElementById("pg-single-counter");
+const grid = document.getElementById('pg-grid');
+const overlay = document.getElementById('pg-overlay');
+const single = document.getElementById('pg-single');
+const imgWrap = document.getElementById('pg-img-wrap');
+const singleCaption = document.getElementById('pg-single-caption');
+const singleCounter = document.getElementById('pg-single-counter');
 
 async function pgLoadData() {
   try {
-    const res = await fetch(DATA_URL, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to load gallery-data.json");
-
+    const res = await fetch(DATA_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed to load');
     const data = await res.json();
-
-    // 支持两种 JSON 格式：
-    // 1. [ { name, cover, images: [...] } ]
-    // 2. { galleries: [ { name, cover, images: [...] } ] }
-    GALLERIES = Array.isArray(data) ? data : (data.galleries || []);
-
-    GALLERIES = GALLERIES
-      .map(gallery => {
-        const images = Array.isArray(gallery.images) ? gallery.images : [];
-
-        const cleanImages = images
-          .map(item => pgNormalizeItem(item, gallery))
+    GALLERIES = (Array.isArray(data) ? data : data.galleries || [])
+      .map(g => {
+        const images = (Array.isArray(g.images) ? g.images : [])
+          .map(item => pgNormalizeItem(item, g))
           .filter(item => item.url);
-
         return {
-          name: gallery.name || gallery.collection || gallery.Collection || "Untitled Collection",
-          cover: gallery.cover || gallery.cover_url || gallery.coverUrl || gallery.Cover || (cleanImages[0] ? cleanImages[0].url : ""),
-          category: gallery.category || gallery.Category || "",
-          title: gallery.title || gallery.Title || "",
-          images: cleanImages
+          name: g.name || g.collection || g.Collection || 'Untitled',
+          cover: g.cover || g.coverurl || g.coverUrl || g.Cover || (images[0] ? images[0].url : ''),
+          images
         };
       })
-      .filter(gallery => gallery.images.length > 0);
-
+      .filter(g => g.images.length > 0);
     pgRenderAlbums();
-
-  } catch (error) {
-    console.error(error);
-    grid.innerHTML = '<div class="pg-error">Gallery data failed to load. Please check gallery-data.json.</div>';
+  } catch (e) {
+    grid.innerHTML = '<div class="pg-error">Gallery failed to load. Please check gallery-data.json.</div>';
   }
 }
 
 function pgNormalizeItem(item, gallery) {
-  // 支持旧格式：纯 URL 字符串
-  if (typeof item === "string") {
-    return {
-      url: item,
-      category: gallery.category || "",
-      title: gallery.title || ""
-    };
-  }
-
-  // 支持 Airtable / Make 常见字段名
-  if (typeof item === "object" && item !== null) {
-    return {
-      url: item.url || item.URL || item.image_url || item.imageUrl || item.ImageURL || item["Image URL"] || item.image || item.Image || "",
-      category: item.category || item.Category || gallery.category || gallery.Category || "",
-      title: item.title || item.Title || item.name || item.Name || gallery.title || gallery.Title || ""
-    };
-  }
-
-  return {
-    url: "",
-    category: "",
-    title: ""
+  if (typeof item === 'string') return { url: item, category: gallery.category || '', title: gallery.title || '' };
+  if (typeof item === 'object' && item !== null) return {
+    url: item.url || item.URL || item.imageurl || item.imageUrl || item.ImageURL || item['Image URL'] || item.image || item.Image || '',
+    category: item.category || item.Category || gallery.category || gallery.Category || '',
+    title: item.title || item.Title || item.name || item.Name || gallery.title || gallery.Title || ''
   };
+  return { url: '', category: '', title: '' };
 }
 
 function pgGetCaption(item) {
-  return [item.category, item.title].filter(Boolean).join(" | ");
+  return [item.category, item.title].filter(Boolean).join(' · ');
 }
 
 function pgRenderAlbums() {
-  grid.innerHTML = "";
-
+  grid.innerHTML = '';
   if (!GALLERIES.length) {
     grid.innerHTML = '<div class="pg-error">No gallery items found.</div>';
     return;
   }
-
   GALLERIES.forEach((g, i) => {
-    const div = document.createElement("div");
-    div.className = "pg-album";
-
-    const img = document.createElement("img");
-    img.src = g.cover;
-    img.alt = g.name;
-    img.loading = "lazy";
-
-    const label = document.createElement("div");
-    label.className = "pg-album-label";
+    const div = document.createElement('div');
+    div.className = 'pg-album';
+    const img = document.createElement('img');
+    img.src = g.cover; img.alt = g.name; img.loading = 'lazy';
+    const label = document.createElement('div');
+    label.className = 'pg-album-label';
     label.textContent = g.name;
-
-    const count = document.createElement("div");
-    count.className = "pg-album-count";
-    count.textContent = g.images.length + " Images";
-
+    const count = document.createElement('div');
+    count.className = 'pg-album-count';
+    count.textContent = g.images.length + ' Images';
     label.appendChild(count);
-    div.appendChild(img);
-    div.appendChild(label);
-
+    div.appendChild(img); div.appendChild(label);
     div.onclick = () => pgOpen(i);
     grid.appendChild(div);
   });
@@ -667,104 +360,98 @@ function pgRenderAlbums() {
 function pgOpen(i) {
   currentGallery = i;
   const g = GALLERIES[i];
-
-  document.getElementById("pg-title").textContent = g.name;
-
-  const inner = document.getElementById("pg-inner-grid");
-  inner.innerHTML = "";
-
+  document.getElementById('pg-title').textContent = g.name;
+  const inner = document.getElementById('pg-inner-grid');
+  inner.innerHTML = '';
   g.images.forEach((item, j) => {
     const caption = pgGetCaption(item);
-
-    const d = document.createElement("div");
-    d.className = "pg-thumb";
-
-    const img = document.createElement("img");
-    img.src = item.url;
-    img.alt = caption || g.name;
-    img.loading = "lazy";
-
+    const d = document.createElement('div');
+    d.className = 'pg-thumb';
+    const img = document.createElement('img');
+    img.src = item.url; img.alt = caption || g.name; img.loading = 'lazy';
     d.appendChild(img);
     d.onclick = () => pgSingleOpen(j);
-
     inner.appendChild(d);
   });
-
-  overlay.classList.add("open");
-  document.body.style.overflow = "hidden";
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function pgClose() {
-  overlay.classList.remove("open");
-  document.body.style.overflow = "";
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── Lightbox with fade transition ──
+function pgBuildImgWrap(gallery) {
+  imgWrap.innerHTML = '';
+  gallery.images.forEach((item, j) => {
+    const img = document.createElement('img');
+    img.src = item.url;
+    img.alt = pgGetCaption(item) || gallery.name;
+    img.loading = 'lazy';
+    if (j === currentImg) img.classList.add('active');
+    imgWrap.appendChild(img);
+  });
 }
 
 function pgSingleOpen(j) {
   currentImg = j;
-
   const g = GALLERIES[currentGallery];
-  const item = g.images[j];
-  const caption = pgGetCaption(item);
-
-  singleImg.src = item.url;
-  singleImg.alt = caption || g.name;
-
-  singleCounter.textContent = (j + 1) + " / " + g.images.length;
-
-  // Category | Title 完全来自 gallery-data.json
-  singleCaption.textContent = caption;
-
-  single.classList.add("open");
+  pgBuildImgWrap(g);
+  singleCaption.textContent = pgGetCaption(g.images[j]);
+  singleCounter.textContent = (j + 1) + ' / ' + g.images.length;
+  single.classList.add('open');
 }
 
 function pgSingleClose() {
-  single.classList.remove("open");
+  single.classList.remove('open');
 }
 
 function pgNav(dir) {
+  if (isTransitioning) return;
   const imgs = GALLERIES[currentGallery].images;
+  const allImgEls = imgWrap.querySelectorAll('img');
+  const current = allImgEls[currentImg];
+
   currentImg = (currentImg + dir + imgs.length) % imgs.length;
-  pgSingleOpen(currentImg);
+  const next = allImgEls[currentImg];
+
+  isTransitioning = true;
+  // fade out current, fade in next
+  current.style.transition = 'opacity 0.25s ease';
+  next.style.transition = 'opacity 0.25s ease';
+  current.classList.remove('active');
+  next.classList.add('active');
+
+  setTimeout(() => { isTransitioning = false; }, 300);
+
+  singleCaption.textContent = pgGetCaption(imgs[currentImg]);
+  singleCounter.textContent = (currentImg + 1) + ' / ' + imgs.length;
 }
 
-function pgOverlayClick(e) {
-  if (e.target === overlay) pgClose();
-}
+function pgOverlayClick(e) { if (e.target === overlay) pgClose(); }
+function pgSingleClick(e) { if (e.target === single) pgSingleClose(); }
 
-function pgSingleClick(e) {
-  if (e.target === single) pgSingleClose();
-}
-
-document.addEventListener("keydown", e => {
-  const singleOpen = single.classList.contains("open");
-
-  if (e.key === "Escape") {
-    pgSingleClose();
-    pgClose();
-  }
-
+// Keyboard
+document.addEventListener('keydown', e => {
+  const singleOpen = single.classList.contains('open');
+  if (e.key === 'Escape') { pgSingleClose(); pgClose(); }
   if (!singleOpen) return;
-
-  if (e.key === "ArrowRight") pgNav(1);
-  if (e.key === "ArrowLeft") pgNav(-1);
+  if (e.key === 'ArrowRight') pgNav(1);
+  if (e.key === 'ArrowLeft') pgNav(-1);
 });
 
-// 触摸滑动支持
-let _tx = 0;
-
-single.addEventListener("touchstart", e => {
-  _tx = e.touches[0].clientX;
-}, { passive: true });
-
-single.addEventListener("touchend", e => {
-  if (!single.classList.contains("open")) return;
-
-  const dx = e.changedTouches[0].clientX - _tx;
+// Touch swipe
+let tx = 0;
+single.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+single.addEventListener('touchend', e => {
+  if (!single.classList.contains('open')) return;
+  const dx = e.changedTouches[0].clientX - tx;
   if (Math.abs(dx) > 40) pgNav(dx < 0 ? 1 : -1);
 }, { passive: true });
 
 pgLoadData();
 </script>
-
 </body>
 </html>
