@@ -207,7 +207,7 @@ html, body {
   </div>
 </div>
 <script>
-const DATA_URL = './gallery-data.json';
+const DATA_URL = '/gallery-data.json';
 const SITE_URL = 'https://visual-core.pages.dev';
 let GALLERIES = [], currentGallery = 0, currentImg = 0, isTransitioning = false;
 const grid = document.getElementById('pg-grid');
@@ -233,7 +233,7 @@ function pgFormatDate(d) {
   try {
     const dt = new Date(d);
     if (isNaN(dt)) return d;
-    return String(dt.getDate()).padStart(2,'0')+'.'+String(dt.getMonth()+1).padStart(2,'0')+'.'+dt.getFullYear();
+    return String(dt.getDate()).padStart(2,'0') + '.' + String(dt.getMonth()+1).padStart(2,'0') + '.' + dt.getFullYear();
   } catch(e) { return d; }
 }
 function pgNormalizeItem(item, gallery) {
@@ -251,9 +251,16 @@ function pgNormalizeItem(item, gallery) {
     cover: !!(item.cover || item.Cover)
   };
 }
+function pgGetRouteOrder(item, fallbackIndex) {
+  if (Number.isFinite(item.order)) return item.order;
+  return fallbackIndex + 1;
+}
+function pgGetPathParts() {
+  return window.location.pathname.replace(/^\/+|\/+$/g, '').split('/').filter(Boolean);
+}
 async function pgLoadData() {
   try {
-    const res = await fetch(DATA_URL, {cache:'no-store'});
+    const res = await fetch(DATA_URL, { cache:'no-store' });
     if (!res.ok) throw new Error('Failed');
     const data = await res.json();
     GALLERIES = (Array.isArray(data) ? data : data.galleries || []).map(g => {
@@ -266,10 +273,10 @@ async function pgLoadData() {
       const rawName = g.name || g.category || 'uncategorized';
       const manualCover = images.find(i => i.cover);
       const cover = g.cover || g.coverUrl || (manualCover ? manualCover.url : '') || (images[0]?.url || '');
-      return {name: pgTitleCase(rawName), slug: pgSlug(rawName), cover, images};
+      return { name: pgTitleCase(rawName), slug: pgSlug(rawName), cover, images };
     }).filter(g => g.images.length > 0);
     pgRenderAlbums();
-    pgHandleHash();
+    pgHandleRoute();
   } catch(e) {
     grid.innerHTML = '<div class="pg-error">Gallery failed to load.</div>';
   }
@@ -315,13 +322,13 @@ function pgOpen(i) {
   });
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
-  pgSetHash(g.slug);
+  pgSetPath(g.slug);
 }
 function pgClose() {
   overlay.classList.remove('open');
   single.classList.remove('open');
   document.body.style.overflow = '';
-  history.replaceState(null, '', window.location.pathname);
+  history.replaceState(null, '', '/');
 }
 function pgBuildImages(gallery) {
   Array.from(imgWrap.querySelectorAll('img')).forEach(el => el.remove());
@@ -338,13 +345,9 @@ function pgSetCaption(item) {
   captionTitle.textContent = item.title || '';
   captionMeta.textContent = [pgTitleCase(item.category), pgFormatDate(item.date)].filter(Boolean).join(' | ');
 }
-function pgGetRouteOrder(item, fallbackIndex) {
-  if (Number.isFinite(item.order)) return item.order;
-  return fallbackIndex + 1;
-}
 function pgUpdatePinterest(item, slug, fallbackIndex) {
   const routeOrder = pgGetRouteOrder(item, fallbackIndex);
-  const pageUrl = encodeURIComponent(SITE_URL + '/#/' + slug + '/' + routeOrder);
+  const pageUrl = encodeURIComponent(SITE_URL + '/' + slug + '/' + routeOrder);
   const mediaUrl = encodeURIComponent(item.url);
   const desc = encodeURIComponent([item.title, pgTitleCase(item.category)].filter(Boolean).join(' · '));
   pinterestBtn.href = 'https://pinterest.com/pin/create/button/?url=' + pageUrl + '&media=' + mediaUrl + '&description=' + desc;
@@ -357,11 +360,11 @@ function pgSingleOpen(j) {
   pgUpdatePinterest(g.images[j], g.slug, j);
   singleCounter.textContent = (j + 1) + ' / ' + g.images.length;
   single.classList.add('open');
-  pgSetHash(g.slug, pgGetRouteOrder(g.images[j], j));
+  pgSetPath(g.slug, pgGetRouteOrder(g.images[j], j));
 }
 function pgSingleClose() {
   single.classList.remove('open');
-  pgSetHash(GALLERIES[currentGallery].slug);
+  pgSetPath(GALLERIES[currentGallery].slug);
 }
 function pgNav(dir) {
   if (isTransitioning) return;
@@ -376,35 +379,30 @@ function pgNav(dir) {
   pgSetCaption(g.images[currentImg]);
   pgUpdatePinterest(g.images[currentImg], g.slug, currentImg);
   singleCounter.textContent = (currentImg + 1) + ' / ' + g.images.length;
-  pgSetHash(g.slug, pgGetRouteOrder(g.images[currentImg], currentImg));
+  pgSetPath(g.slug, pgGetRouteOrder(g.images[currentImg], currentImg));
 }
-function pgSetHash(slug, order) {
-  history.replaceState(null, '', order !== undefined && order !== null ? '#/' + slug + '/' + order : '#/' + slug);
+function pgSetPath(slug, order) {
+  const nextPath = order !== undefined && order !== null ? '/' + slug + '/' + order : '/' + slug;
+  history.replaceState(null, '', nextPath);
 }
-function pgHandleHash() {
-  const hash = window.location.hash;
-  if (!hash || hash === '#') return;
-  const imgM = hash.match(/^#\/([^/]+)\/(\d+)$/);
-  if (imgM) {
-    const slug = imgM[1];
-    const order = parseInt(imgM[2], 10);
-    const ci = GALLERIES.findIndex(g => g.slug === slug);
-    if (ci >= 0) {
-      const ii = GALLERIES[ci].images.findIndex((img, index) => pgGetRouteOrder(img, index) === order);
-      if (ii >= 0) {
-        pgOpen(ci);
-        pgSingleOpen(ii);
-        return;
-      }
-      pgOpen(ci);
-      return;
-    }
+function pgHandleRoute() {
+  const parts = pgGetPathParts();
+  if (!parts.length) return;
+  const slug = parts[0];
+  const ci = GALLERIES.findIndex(g => g.slug === slug);
+  if (ci < 0) return;
+  if (parts.length === 1) {
+    pgOpen(ci);
+    return;
   }
-  const colM = hash.match(/^#\/([^/]+)$/);
-  if (colM) {
-    const ci = GALLERIES.findIndex(g => g.slug === colM[1]);
-    if (ci >= 0) pgOpen(ci);
+  const order = parseInt(parts[1], 10);
+  const ii = GALLERIES[ci].images.findIndex((img, index) => pgGetRouteOrder(img, index) === order);
+  if (ii >= 0) {
+    pgOpen(ci);
+    pgSingleOpen(ii);
+    return;
   }
+  pgOpen(ci);
 }
 overlay.addEventListener('click', e => { if (e.target === overlay) pgClose(); });
 single.addEventListener('click', e => { if (e.target === single) pgSingleClose(); });
@@ -415,13 +413,19 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') pgNav(1);
   if (e.key === 'ArrowLeft') pgNav(-1);
 });
+window.addEventListener('popstate', () => {
+  overlay.classList.remove('open');
+  single.classList.remove('open');
+  document.body.style.overflow = '';
+  pgHandleRoute();
+});
 let tx = 0;
-single.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+single.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive:true });
 single.addEventListener('touchend', e => {
   if (!single.classList.contains('open')) return;
   const dx = e.changedTouches[0].clientX - tx;
   if (Math.abs(dx) > 40) pgNav(dx < 0 ? 1 : -1);
-}, {passive:true});
+}, { passive:true });
 pgLoadData();
 </script>
 </body>
