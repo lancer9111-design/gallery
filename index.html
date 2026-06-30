@@ -97,7 +97,7 @@ html, body {
 .pg-single-img-wrap img {
   max-width:100%; max-height:100%; border-radius:8px; object-fit:contain;
   position:absolute;
-  transition:opacity 0.25s ease; opacity:0; pointer-events:none;
+  transition:opacity 0.25s ease; opacity:0; pointer-events:auto;
 }
 .pg-single-img-wrap img.active { opacity:1; pointer-events:auto; }
 .pg-pinterest-btn {
@@ -202,7 +202,16 @@ html, body {
 <script>
 const DATA_URL = '/gallery-data.json';
 const SITE_ORIGIN = window.location.origin;
-let GALLERIES = [], currentGallery = 0, currentImg = 0, isTransitioning = false;
+
+let GALLERIES = [];
+let currentGallery = 0;
+let currentImg = 0;
+let isTransitioning = false;
+
+let touchStartX = 0;
+let touchStartY = 0;
+let touchMoved = false;
+
 const grid = document.getElementById('pg-grid');
 const overlay = document.getElementById('pg-overlay');
 const single = document.getElementById('pg-single');
@@ -211,24 +220,46 @@ const pinterestBtn = document.getElementById('pg-pinterest-btn');
 const captionTitle = document.getElementById('pg-caption-title');
 const captionMeta = document.getElementById('pg-caption-meta');
 const singleCounter = document.getElementById('pg-single-counter');
-document.getElementById('pg-close-btn').onclick = pgClose;
-document.getElementById('pg-single-close-btn').onclick = pgSingleClose;
-document.getElementById('pg-prev-btn').onclick = () => pgNav(-1);
-document.getElementById('pg-next-btn').onclick = () => pgNav(1);
+
+document.getElementById('pg-close-btn').onclick = (e) => {
+  e.stopPropagation();
+  pgClose();
+};
+
+document.getElementById('pg-single-close-btn').onclick = (e) => {
+  e.stopPropagation();
+  pgSingleClose();
+};
+
+document.getElementById('pg-prev-btn').onclick = (e) => {
+  e.stopPropagation();
+  pgNav(-1);
+};
+
+document.getElementById('pg-next-btn').onclick = (e) => {
+  e.stopPropagation();
+  pgNav(1);
+};
+
 function pgSlug(str) {
   return (str || '').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
+
 function pgTitleCase(str) {
   return (str || '').replace(/\b\w/g, c => c.toUpperCase());
 }
+
 function pgFormatDate(d) {
   if (!d) return '';
   try {
     const dt = new Date(d);
     if (isNaN(dt)) return d;
     return String(dt.getDate()).padStart(2,'0') + '.' + String(dt.getMonth()+1).padStart(2,'0') + '.' + dt.getFullYear();
-  } catch(e) { return d; }
+  } catch(e) {
+    return d;
+  }
 }
+
 function pgNormalizeUrl(url) {
   if (!url) return '';
   try {
@@ -237,6 +268,7 @@ function pgNormalizeUrl(url) {
     return String(url).replace(SITE_ORIGIN, '').replace(/\/+$/, '') || '/';
   }
 }
+
 function pgNormalizeItem(item, gallery) {
   if (typeof item === 'string') {
     return { url:item, title:'', category:gallery.name || '', date:'', order:null, cover:false, page_url:'', route_path:'' };
@@ -275,114 +307,158 @@ function pgNormalizeItem(item, gallery) {
     route_path: routePath
   };
 }
+
 function pgGetFallbackPath(gallery, item, index) {
   const slug = gallery.slug;
   const suffix = Number.isFinite(item.order) ? String(item.order) : String(index + 1);
   return '/' + slug + '/' + suffix;
 }
+
 function pgGetItemPath(gallery, item, index) {
   return item.route_path && item.route_path !== '/' ? item.route_path : pgGetFallbackPath(gallery, item, index);
 }
+
 function pgGetCollectionPath(gallery) {
   return '/' + gallery.slug;
 }
+
 function pgGetPathParts() {
   return window.location.pathname.replace(/^\/+|\/+$/g, '').split('/').filter(Boolean);
 }
+
 async function pgLoadData() {
   try {
     const res = await fetch(DATA_URL, { cache:'no-store' });
     if (!res.ok) throw new Error('Failed');
     const data = await res.json();
+
     GALLERIES = (Array.isArray(data) ? data : data.galleries || []).map(g => {
       const rawName = g.name || g.category || 'uncategorized';
       const slug = pgSlug(rawName);
       const baseGallery = { name: pgTitleCase(rawName), slug };
       const images = (g.images || []).map(i => pgNormalizeItem(i, baseGallery)).filter(i => i.url);
+
       images.sort((a, b) => {
         const ao = Number.isFinite(a.order) ? a.order : -Infinity;
         const bo = Number.isFinite(b.order) ? b.order : -Infinity;
         return bo - ao;
       });
+
       const manualCover = images.find(i => i.cover);
       const cover = g.cover || g.coverUrl || (manualCover ? manualCover.url : '') || (images[0]?.url || '');
+
       return { ...baseGallery, cover, images };
     }).filter(g => g.images.length > 0);
+
     pgRenderAlbums();
     pgHandleRoute();
   } catch(e) {
     grid.innerHTML = '<div class="pg-error">Gallery failed to load.</div>';
   }
 }
+
 function pgRenderAlbums() {
   grid.innerHTML = '';
+
   if (!GALLERIES.length) {
     grid.innerHTML = '<div class="pg-error">No gallery items found.</div>';
     return;
   }
+
   GALLERIES.forEach((g, i) => {
     const div = document.createElement('div');
     div.className = 'pg-album';
+
     const img = document.createElement('img');
     img.src = g.cover;
     img.alt = g.name;
     img.loading = 'lazy';
+
     const label = document.createElement('div');
     label.className = 'pg-album-label';
     label.innerHTML = g.name + '<div class="pg-album-count">' + g.images.length + ' Images</div>';
+
     div.appendChild(img);
     div.appendChild(label);
     div.onclick = () => pgOpen(i);
+
     grid.appendChild(div);
   });
 }
+
 function pgOpen(i, skipPathUpdate) {
   currentGallery = i;
   const g = GALLERIES[i];
+
   document.getElementById('pg-title').textContent = g.name;
+
   const inner = document.getElementById('pg-inner-grid');
   inner.innerHTML = '';
+
   g.images.forEach((item, j) => {
     const d = document.createElement('div');
     d.className = 'pg-thumb';
+
     const img = document.createElement('img');
     img.src = item.url;
     img.alt = item.title || g.name;
     img.loading = 'lazy';
+
     d.appendChild(img);
-    d.onclick = () => pgSingleOpen(j);
+    d.onclick = (e) => {
+      e.stopPropagation();
+      pgSingleOpen(j);
+    };
+
     inner.appendChild(d);
   });
+
   overlay.classList.add('open');
+  single.classList.remove('open');
   document.body.style.overflow = 'hidden';
-  if (!skipPathUpdate) history.replaceState(null, '', pgGetCollectionPath(g));
+
+  if (!skipPathUpdate) {
+    history.replaceState(null, '', pgGetCollectionPath(g));
+  }
 }
+
 function pgClose() {
   overlay.classList.remove('open');
   single.classList.remove('open');
   document.body.style.overflow = '';
   history.replaceState(null, '', '/');
 }
+
 function pgBuildImages(gallery) {
   Array.from(imgWrap.querySelectorAll('img')).forEach(el => el.remove());
+
   gallery.images.forEach((item, j) => {
     const img = document.createElement('img');
     img.src = item.url;
     img.alt = item.title || gallery.name;
     img.loading = 'lazy';
+    img.draggable = false;
     if (j === currentImg) img.classList.add('active');
+
+    img.addEventListener('click', (e) => {
+      e.stopPropagation();
+      pgSingleClose();
+    });
+
     imgWrap.insertBefore(img, pinterestBtn);
   });
 }
+
 function pgSetCaption(item) {
   captionTitle.textContent = item.title || '';
-  const noText = Number.isFinite(item.order) ? 'No.' + item.order : '';
+  const noText = Number.isFinite(item.order) ? 'No. ' + item.order : '';
   captionMeta.textContent = [
     pgTitleCase(item.category),
     pgFormatDate(item.date),
     noText
   ].filter(Boolean).join(' | ');
 }
+
 function pgUpdatePinterest(gallery, item, index) {
   const pagePath = pgGetItemPath(gallery, item, index);
   const pageUrl = encodeURIComponent(SITE_ORIGIN + pagePath);
@@ -390,107 +466,158 @@ function pgUpdatePinterest(gallery, item, index) {
   const desc = encodeURIComponent([item.title, pgTitleCase(item.category)].filter(Boolean).join(' · '));
   pinterestBtn.href = 'https://pinterest.com/pin/create/button/?url=' + pageUrl + '&media=' + mediaUrl + '&description=' + desc;
 }
+
 function pgSingleOpen(j, skipPathUpdate) {
   currentImg = j;
   const g = GALLERIES[currentGallery];
+
   pgBuildImages(g);
   pgSetCaption(g.images[j]);
   pgUpdatePinterest(g, g.images[j], j);
   singleCounter.textContent = (j + 1) + ' / ' + g.images.length;
+
   single.classList.add('open');
-  if (!skipPathUpdate) history.replaceState(null, '', pgGetItemPath(g, g.images[j], j));
+  document.body.style.overflow = 'hidden';
+
+  if (!skipPathUpdate) {
+    history.replaceState(null, '', pgGetItemPath(g, g.images[j], j));
+  }
 }
+
 function pgSingleClose() {
   single.classList.remove('open');
-  history.replaceState(null, '', pgGetCollectionPath(GALLERIES[currentGallery]));
+  document.body.style.overflow = 'hidden';
+
+  if (GALLERIES[currentGallery]) {
+    history.replaceState(null, '', pgGetCollectionPath(GALLERIES[currentGallery]));
+  }
 }
+
 function pgNav(dir) {
   if (isTransitioning) return;
+
   const g = GALLERIES[currentGallery];
   const allImgs = imgWrap.querySelectorAll('img');
   if (!allImgs.length) return;
+
   allImgs[currentImg].classList.remove('active');
   currentImg = (currentImg + dir + g.images.length) % g.images.length;
   allImgs[currentImg].classList.add('active');
+
   isTransitioning = true;
   setTimeout(() => { isTransitioning = false; }, 300);
+
   pgSetCaption(g.images[currentImg]);
   pgUpdatePinterest(g, g.images[currentImg], currentImg);
   singleCounter.textContent = (currentImg + 1) + ' / ' + g.images.length;
+
   history.replaceState(null, '', pgGetItemPath(g, g.images[currentImg], currentImg));
 }
+
 function pgHandleRoute() {
   const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
   if (currentPath === '/') return;
+
   const parts = pgGetPathParts();
   if (!parts.length) return;
+
   const slug = parts[0];
   const ci = GALLERIES.findIndex(g => g.slug === slug);
   if (ci < 0) return;
+
   const gallery = GALLERIES[ci];
+
   if (parts.length === 1) {
     pgOpen(ci, true);
     return;
   }
+
   const ii = gallery.images.findIndex((img, index) => {
     const itemPath = pgGetItemPath(gallery, img, index);
     return itemPath === currentPath;
   });
+
   if (ii >= 0) {
     pgOpen(ci, true);
     pgSingleOpen(ii, true);
     return;
   }
+
   pgOpen(ci, true);
 }
-overlay.addEventListener('click', e => { if (e.target === overlay) pgClose(); });
-single.addEventListener('click', e => { if (e.target === single) pgSingleClose(); });
+
+overlay.addEventListener('click', e => {
+  if (e.target === overlay) pgClose();
+});
+
+single.addEventListener('click', e => {
+  if (e.target === single) pgSingleClose();
+});
+
+pinterestBtn.addEventListener('click', e => {
+  e.stopPropagation();
+});
+
 document.addEventListener('keydown', e => {
   const open = single.classList.contains('open');
-  if (e.key === 'Escape') { if (open) pgSingleClose(); else pgClose(); }
+
+  if (e.key === 'Escape') {
+    if (open) pgSingleClose();
+    else if (overlay.classList.contains('open')) pgClose();
+  }
+
   if (!open) return;
+
   if (e.key === 'ArrowRight') pgNav(1);
   if (e.key === 'ArrowLeft') pgNav(-1);
 });
+
 window.addEventListener('popstate', () => {
   overlay.classList.remove('open');
   single.classList.remove('open');
   document.body.style.overflow = '';
   pgHandleRoute();
 });
-let touchStartX = 0;
-let touchStartY = 0;
-let touchMoved = false;
 
-single.addEventListener('touchstart', e => {
+imgWrap.addEventListener('touchstart', e => {
   if (!single.classList.contains('open')) return;
+  if (!e.target.closest('img')) return;
+
   touchStartX = e.touches[0].clientX;
   touchStartY = e.touches[0].clientY;
   touchMoved = false;
 }, { passive:true });
 
-single.addEventListener('touchmove', e => {
+imgWrap.addEventListener('touchmove', e => {
   if (!single.classList.contains('open')) return;
+
   const dx = e.touches[0].clientX - touchStartX;
   const dy = e.touches[0].clientY - touchStartY;
-  if (Math.abs(dx) > 10 || Math.abs(dy) > 10) touchMoved = true;
+
+  if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+    touchMoved = true;
+  }
 }, { passive:true });
 
-single.addEventListener('touchend', e => {
+imgWrap.addEventListener('touchend', e => {
   if (!single.classList.contains('open')) return;
+  if (!e.target.closest('img')) return;
 
   const dx = e.changedTouches[0].clientX - touchStartX;
   const dy = e.changedTouches[0].clientY - touchStartY;
 
   if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+    e.preventDefault();
     pgNav(dx < 0 ? 1 : -1);
     return;
   }
 
-  if (!touchMoved || (Math.abs(dx) < 10 && Math.abs(dy) < 10)) {
+  if (!touchMoved && Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+    e.preventDefault();
     pgSingleClose();
   }
-}, { passive:true });
+}, { passive:false });
+
 pgLoadData();
 </script>
 </body>
