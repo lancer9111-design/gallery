@@ -238,12 +238,31 @@ function pgNormalizeUrl(url) {
 }
 function pgNormalizeItem(item, gallery) {
   if (typeof item === 'string') {
-    return { url:item, title:'', category:gallery.name || '', date:'', order:null, cover:false, page_url:'' };
+    return { url:item, title:'', category:gallery.name || '', date:'', order:null, cover:false, page_url:'', route_path:'' };
   }
+
   const rawOrder = item.order ?? item.Order ?? null;
   const parsedOrder = rawOrder === null || rawOrder === '' ? null : Number(rawOrder);
   const category = item.category || item.Category || gallery.name || '';
-  const pageUrl = item.page_url || item.Page_url || item.pageUrl || '';
+
+  const pageUrlRaw =
+    item.pageurl ??
+    item.page_url ??
+    item.Page_url ??
+    item.pageUrl ??
+    '';
+
+  const pageUrl = String(pageUrlRaw).trim();
+
+  let routePath = '';
+  if (pageUrl) {
+    if (/^\d+$/.test(pageUrl)) {
+      routePath = '/' + gallery.slug + '/' + pageUrl;
+    } else {
+      routePath = pgNormalizeUrl(pageUrl);
+    }
+  }
+
   return {
     url: item.url || item.URL || item.Img_url || item['Image URL'] || '',
     title: item.title || item.Title || item['Img Title'] || item.img_title || '',
@@ -252,7 +271,7 @@ function pgNormalizeItem(item, gallery) {
     order: Number.isFinite(parsedOrder) ? parsedOrder : null,
     cover: !!(item.cover || item.Cover),
     page_url: pageUrl,
-    route_path: pgNormalizeUrl(pageUrl)
+    route_path: routePath
   };
 }
 function pgGetFallbackPath(gallery, item, index) {
