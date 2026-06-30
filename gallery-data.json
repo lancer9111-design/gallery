@@ -93,6 +93,18 @@
       "name": "Jeans Outfits",
       "images": [
         {
+          "order": 33,
+          "url": "https://pub-2193ba767eaa45ac995c94988ff1de97.r2.dev/1782811318.jpg",
+          "title": "Edgy Street Style Outfit For The Urban Explorer",
+          "category": "Jeans Outfits",
+          "date": "2026-06-30",
+          "pageurl": "26300617215933",
+          "tags": [
+            "outfits"
+          ],
+          "cover": false
+        },
+        {
           "order": 32,
           "url": "https://pub-2193ba767eaa45ac995c94988ff1de97.r2.dev/1782810856.jpg",
           "title": "Effortless Knit Sweater Outfit For A Chic Street Stroll",
