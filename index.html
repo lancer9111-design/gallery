@@ -375,7 +375,12 @@ function pgBuildImages(gallery) {
 }
 function pgSetCaption(item) {
   captionTitle.textContent = item.title || '';
-  captionMeta.textContent = [pgTitleCase(item.category), pgFormatDate(item.date)].filter(Boolean).join(' | ');
+  const noText = Number.isFinite(item.order) ? 'No. ' + item.order : '';
+  captionMeta.textContent = [
+    pgTitleCase(item.category),
+    pgFormatDate(item.date),
+    noText
+  ].filter(Boolean).join(' | ');
 }
 function pgUpdatePinterest(gallery, item, index) {
   const pagePath = pgGetItemPath(gallery, item, index);
