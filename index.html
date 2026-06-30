@@ -375,7 +375,7 @@ function pgBuildImages(gallery) {
 }
 function pgSetCaption(item) {
   captionTitle.textContent = item.title || '';
-  const noText = Number.isFinite(item.order) ? 'No. ' + item.order : '';
+  const noText = Number.isFinite(item.order) ? 'No.' + item.order : '';
   captionMeta.textContent = [
     pgTitleCase(item.category),
     pgFormatDate(item.date),
