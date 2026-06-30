@@ -88,6 +88,20 @@
           "cover": false
         }
       ]
+    },
+    {
+      "name": "Jeans Outfits",
+      "images": [
+        {
+          "order": 31,
+          "url": "https://pub-2193ba767eaa45ac995c94988ff1de97.r2.dev/1782810686.jpg",
+          "title": "Casual Oversized T-Shirt Outfit For Comfortable Street Style",
+          "category": "Jeans Outfits",
+          "date": "2026-06-30",
+          "pageurl": "26300617112731",
+          "cover": false
+        }
+      ]
     }
   ]
 }
