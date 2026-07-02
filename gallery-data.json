@@ -123,6 +123,23 @@
           "cover": false
         }
       ]
+    },
+    {
+      "name": "HEAVY BLANK",
+      "images": [
+        {
+          "order": 40,
+          "url": "https://pub-2193ba767eaa45ac995c94988ff1de97.r2.dev/1782998623.jpg",
+          "title": "Chic Hoodie Aesthetic Outfit For Urban Commute In The Subway",
+          "category": "HEAVY BLANK",
+          "date": "",
+          "pageurl": "26020721234440",
+          "tags": [
+            "outfits"
+          ],
+          "cover": false
+        }
+      ]
     }
   ]
 }
